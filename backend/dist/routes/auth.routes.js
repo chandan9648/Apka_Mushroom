@@ -1,0 +1,12 @@
+import { Router } from "express";
+import { validateBody } from "../middleware/validate.js";
+import { requireAuth } from "../middleware/requireAuth.js";
+import { signup, login, verifyEmail, forgotPassword, resetPassword, refresh, me, SignupSchema, LoginSchema, VerifyEmailSchema, ForgotPasswordSchema, ResetPasswordSchema, RefreshSchema } from "../controllers/auth.controller.js";
+export const authRouter = Router();
+authRouter.post("/signup", validateBody(SignupSchema), signup);
+authRouter.post("/login", validateBody(LoginSchema), login);
+authRouter.post("/verify-email", validateBody(VerifyEmailSchema), verifyEmail);
+authRouter.post("/forgot-password", validateBody(ForgotPasswordSchema), forgotPassword);
+authRouter.post("/reset-password", validateBody(ResetPasswordSchema), resetPassword);
+authRouter.post("/refresh", validateBody(RefreshSchema), refresh);
+authRouter.get("/me", requireAuth, me);

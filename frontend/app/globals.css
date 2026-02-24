@@ -1,0 +1,20 @@
+@import "tailwindcss";
+
+@layer base {
+	html {
+		@apply h-full;
+	}
+	body {
+		@apply min-h-full bg-white text-zinc-900;
+	}
+	a {
+		@apply underline-offset-4;
+	}
+}
+
+@layer utilities {
+	.container-x {
+		@apply mx-auto w-full max-w-6xl px-4;
+	}
+}
+

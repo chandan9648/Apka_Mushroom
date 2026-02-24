@@ -1,0 +1,15 @@
+import mongoose, { type InferSchemaType } from "mongoose";
+
+const CategorySchema = new mongoose.Schema(
+  {
+    name: { type: String, required: true, unique: true },
+    slug: { type: String, required: true, unique: true, index: true },
+    description: { type: String },
+    imageUrl: { type: String }
+  },
+  { timestamps: true }
+);
+
+export type Category = InferSchemaType<typeof CategorySchema>;
+
+export const CategoryModel = mongoose.models.Category || mongoose.model("Category", CategorySchema);

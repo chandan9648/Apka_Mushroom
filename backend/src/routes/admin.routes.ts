@@ -1,0 +1,17 @@
+import { Router } from "express";
+import { requireAuth, requireRole } from "../middleware/requireAuth.js";
+import { upload } from "../middleware/upload.js";
+import { uploadSingle } from "../controllers/upload.controller.js";
+import { listUsers, stats, analytics } from "../controllers/admin.controller.js";
+import { uploadProductsExcel } from "../controllers/excel.controller.js";
+
+export const adminRouter = Router();
+
+adminRouter.use(requireAuth, requireRole("admin"));
+
+adminRouter.get("/stats", stats);
+adminRouter.get("/analytics", analytics);
+adminRouter.get("/users", listUsers);
+
+adminRouter.post("/upload", upload.single("file"), uploadSingle);
+adminRouter.post("/products/upload-excel", upload.single("file"), uploadProductsExcel);

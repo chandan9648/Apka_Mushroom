@@ -1,7 +1,12 @@
+import dotenv from "dotenv";
+import "dotenv/config";
+
 import http from "http";
 import { Server as SocketIOServer } from "socket.io";
 import { createApp } from "./app.js";
 import { connectDb } from "./db/connect.js";
+
+dotenv.config();
 
 async function main() {
   await connectDb();
@@ -22,9 +27,11 @@ async function main() {
 
   app.set("io", io);
 
-  server.listen(process.env.PORT || 3000, () => {
+  const port = Number(process.env.PORT) || 3000;
+
+  server.listen(port, () => {
     // eslint-disable-next-line no-console
-    console.log(`Server is listening on :${process.env.PORT || 3000}`);
+    console.log(`Backend Server is listening on : ${port}`);
   });
 }
 

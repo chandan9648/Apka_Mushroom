@@ -20,7 +20,7 @@ type AuthContextValue = AuthState & {
 
 const AuthContext = React.createContext<AuthContextValue | null>(null);
 
-const LS_KEY = "fungiverse_auth_v1";
+const LS_KEY = "ApkaMushroom_auth_v1";
 
 function loadFromStorage(): Partial<AuthState> {
   if (typeof window === "undefined") return {};

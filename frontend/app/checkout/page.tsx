@@ -83,7 +83,7 @@ export default function CheckoutPage() {
         key: createRes.razorpay.keyId,
         amount: createRes.razorpay.amount,
         currency: createRes.razorpay.currency,
-        name: "FungiVerse",
+        name: "ApkaMushroom",
         description: "Order payment",
         order_id: createRes.razorpay.orderId,
         handler: async (response: {

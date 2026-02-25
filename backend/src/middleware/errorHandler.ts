@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import { ApiError } from "../utils/apiError.js";
-import { env } from "../config/env.js";
+
 
 export function notFound(req: Request, res: Response) {
   res.status(404).json({ message: "Route not found" });
@@ -13,7 +13,7 @@ export function errorHandler(err: unknown, req: Request, res: Response, next: Ne
     code: apiErr.code
   };
 
-  if (env.NODE_ENV !== "production") {
+  if (process.env.NODE_ENV !== "production") {
     payload.details = apiErr.details;
     payload.stack = (err as any)?.stack;
   }

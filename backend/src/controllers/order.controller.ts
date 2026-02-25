@@ -6,7 +6,7 @@ import { ApiError } from "../utils/apiError.js";
 import { OrderModel } from "../models/Order.js";
 import { ProductModel } from "../models/Product.js";
 import { computeDiscount } from "../utils/coupon.js";
-import { env } from "../config/env.js";
+
 import { CouponModel } from "../models/Coupon.js";
 
 const AddressSchema = z.object({
@@ -40,13 +40,26 @@ export const VerifyRazorpaySchema = z.object({
   razorpaySignature: z.string().min(1)
 });
 
-function verifySignature(razorpayOrderId: string, razorpayPaymentId: string, signature: string) {
+function verifySignature(razorpayOrderId: string, razorpayPaymentId: string, signature: string, keySecret: string) {
   const body = `${razorpayOrderId}|${razorpayPaymentId}`;
-  const expected = crypto.createHmac("sha256", env.RAZORPAY_KEY_SECRET).update(body).digest("hex");
+  const expected = crypto.createHmac("sha256", keySecret).update(body).digest("hex");
   return expected === signature;
 }
 
-const razorpay = new Razorpay({ key_id: env.RAZORPAY_KEY_ID, key_secret: env.RAZORPAY_KEY_SECRET });
+let razorpayClient: Razorpay | null = null;
+
+function getRazorpayClient() {
+  if (razorpayClient) return razorpayClient;
+
+  const keyId = process.env.RAZORPAY_KEY_ID;
+  const keySecret = process.env.RAZORPAY_KEY_SECRET;
+  if (!keyId || !keySecret) {
+    throw new ApiError(500, "Razorpay is not configured (missing RAZORPAY_KEY_ID/RAZORPAY_KEY_SECRET)");
+  }
+
+  razorpayClient = new Razorpay({ key_id: keyId, key_secret: keySecret });
+  return razorpayClient;
+}
 
 export const createOrder = asyncHandler(async (req, res) => {
   if (!req.auth) throw new ApiError(401, "Unauthorized");
@@ -88,6 +101,7 @@ export const createOrder = asyncHandler(async (req, res) => {
     paymentProvider: "razorpay"
   });
 
+  const razorpay = getRazorpayClient();
   const razorpayOrder = await razorpay.orders.create({
     amount: Math.round(total * 100),
     currency: "INR",
@@ -99,7 +113,7 @@ export const createOrder = asyncHandler(async (req, res) => {
 
   res.status(201).json({
     order,
-    razorpay: { keyId: env.RAZORPAY_KEY_ID, orderId: razorpayOrder.id, amount: razorpayOrder.amount, currency: razorpayOrder.currency }
+    razorpay: { keyId: process.env.RAZORPAY_KEY_ID, orderId: razorpayOrder.id, amount: razorpayOrder.amount, currency: razorpayOrder.currency }
   });
 });
 
@@ -113,7 +127,10 @@ export const verifyRazorpayPayment = asyncHandler(async (req, res) => {
   if (order.status === "paid") return res.json({ ok: true, order });
   if (order.razorpayOrderId !== body.razorpayOrderId) throw new ApiError(400, "Mismatched Razorpay order");
 
-  const ok = verifySignature(body.razorpayOrderId, body.razorpayPaymentId, body.razorpaySignature);
+  const keySecret = process.env.RAZORPAY_KEY_SECRET;
+  if (!keySecret) throw new ApiError(500, "Razorpay is not configured (missing RAZORPAY_KEY_SECRET)");
+
+  const ok = verifySignature(body.razorpayOrderId, body.razorpayPaymentId, body.razorpaySignature, keySecret);
   if (!ok) throw new ApiError(400, "Invalid payment signature");
 
   order.status = "paid";

@@ -1,14 +1,15 @@
 import multer from "multer";
 import path from "path";
 import fs from "fs";
-import { env } from "../config/env.js";
 
-const maxBytes = env.MAX_UPLOAD_MB * 1024 * 1024;
+
+const maxBytes = Number(process.env.MAX_UPLOAD_MB) * 1024 * 1024;
 
 export const upload = multer({
   storage: multer.diskStorage({
     destination: (req, file, cb) => {
-      const dest = env.UPLOADS_DIR;
+
+      const dest = process.env.UPLOADS_DIR || "uploads";
       fs.mkdirSync(dest, { recursive: true });
       cb(null, dest);
     },

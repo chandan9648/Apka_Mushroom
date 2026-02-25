@@ -24,7 +24,7 @@ type CartContextValue = {
 
 const CartContext = React.createContext<CartContextValue | null>(null);
 
-const LS_KEY = "fungiverse_cart_v1";
+const LS_KEY = "ApkaMushroom_cart_v1";
 
 function loadCart(): CartItem[] {
   if (typeof window === "undefined") return [];

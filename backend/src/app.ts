@@ -34,7 +34,7 @@ export function createApp() {
 
   app.use(
     cors({
-      origin: process.env.CLIENT_ORIGIN,
+      origin: [process.env.CLIENT_ORIGIN  || "http://localhost:3001"],
       credentials: true
     })
   );
@@ -50,7 +50,7 @@ export function createApp() {
   );
 
   app.get("/api/health", (req, res) => {
-    res.json({ ok: true, name: "fungiverse-api" });
+    res.json({ ok: true, name: "Apka Mushroom-api" });
   });
 
   app.use("/api/auth", authRouter);

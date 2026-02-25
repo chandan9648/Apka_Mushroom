@@ -16,8 +16,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "FungiVerse",
-  description: "Mushroom store powered by FungiVerse API",
+  title: "Apka Mushroom",
+  description: "Mushroom store powered by ApkaMushroom API",
 };
 
 export default function RootLayout({

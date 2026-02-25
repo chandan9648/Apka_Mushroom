@@ -6,7 +6,7 @@ import { OtpTokenModel } from "../models/OtpToken.js";
 import { hashPassword, verifyPassword } from "../utils/password.js";
 import { randomNumericCode, sha256 } from "../utils/crypto.js";
 import { signAccessToken, signRefreshToken } from "../utils/jwt.js";
-import { env } from "../config/env.js";
+
 
 const emailSchema = z.string().email().transform((v) => v.toLowerCase());
 
@@ -41,7 +41,7 @@ export const RefreshSchema = z.object({
 });
 
 function otpExpiresAt() {
-  return new Date(Date.now() + env.OTP_TTL_MINUTES * 60_000);
+  return new Date(Date.now() + (Number(process.env.OTP_TTL_MINUTES) * 60 * 1000));
 }
 
 async function issueOtp(userId: string, purpose: "verify_email" | "reset_password") {
@@ -129,7 +129,7 @@ export const refresh = asyncHandler(async (req, res) => {
   const jwt = await import("jsonwebtoken");
 
   try {
-    const payload = jwt.default.verify(body.refreshToken, env.JWT_REFRESH_SECRET) as any;
+    const payload = jwt.default.verify(body.refreshToken, String(process.env.JWT_REFRESH_SECRET)) as any;
     const accessToken = signAccessToken({ sub: payload.sub, role: payload.role });
     res.json({ accessToken });
   } catch {

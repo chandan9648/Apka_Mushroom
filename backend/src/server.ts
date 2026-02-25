@@ -1,7 +1,6 @@
 import http from "http";
 import { Server as SocketIOServer } from "socket.io";
 import { createApp } from "./app.js";
-import { env } from "./config/env.js";
 import { connectDb } from "./db/connect.js";
 
 async function main() {
@@ -12,7 +11,7 @@ async function main() {
 
   const io = new SocketIOServer(server, {
     cors: {
-      origin: env.CLIENT_ORIGIN,
+      origin: process.env.CLIENT_ORIGIN,
       credentials: true
     }
   });
@@ -23,9 +22,9 @@ async function main() {
 
   app.set("io", io);
 
-  server.listen(env.PORT, () => {
+  server.listen(process.env.PORT || 3000, () => {
     // eslint-disable-next-line no-console
-    console.log(`FungiVerse API listening on :${env.PORT}`);
+    console.log(`Server is listening on :${process.env.PORT || 3000}`);
   });
 }
 

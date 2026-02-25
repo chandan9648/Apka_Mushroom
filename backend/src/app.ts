@@ -7,7 +7,6 @@ import cookieParser from "cookie-parser";
 import rateLimit from "express-rate-limit";
 import path from "path";
 import { fileURLToPath } from "url";
-import { env } from "./config/env.js";
 import { notFound, errorHandler } from "./middleware/errorHandler.js";
 import { authRouter } from "./routes/auth.routes.js";
 import { productRouter } from "./routes/product.routes.js";
@@ -18,6 +17,7 @@ import { couponRouter } from "./routes/coupon.routes.js";
 import { adminRouter } from "./routes/admin.routes.js";
 import { paymentRouter } from "./routes/payment.routes.js";
 import { recommendationRouter } from "./routes/recommendation.routes.js";
+import process from "process";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -34,12 +34,12 @@ export function createApp() {
 
   app.use(
     cors({
-      origin: env.CLIENT_ORIGIN,
+      origin: process.env.CLIENT_ORIGIN,
       credentials: true
     })
   );
 
-  app.use(morgan(env.NODE_ENV === "production" ? "combined" : "dev"));
+  app.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"));
   app.use(
     rateLimit({
       windowMs: 60_000,
@@ -63,7 +63,7 @@ export function createApp() {
   app.use("/api/payments", paymentRouter);
   app.use("/api/recommendations", recommendationRouter);
 
-  const uploadsDir = path.resolve(__dirname, env.UPLOADS_DIR);
+  const uploadsDir = path.resolve(__dirname, String(process.env.UPLOADS_DIR));
   app.use("/uploads", express.static(uploadsDir));
 
   app.use(notFound);

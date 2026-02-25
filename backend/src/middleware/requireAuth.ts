@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import { env } from "../config/env.js";
 import { ApiError } from "../utils/apiError.js";
+import process from "process";
 
 export type JwtPayload = {
   sub: string;
@@ -23,10 +23,10 @@ export function requireAuth(req: Request, res: Response, next: NextFunction) {
   if (!token) return next(new ApiError(401, "Missing auth token"));
 
   try {
-    const payload = jwt.verify(token, env.JWT_ACCESS_SECRET) as JwtPayload;
+    const payload = jwt.verify(token, String(process.env.JWT_ACCESS_SECRET)) as JwtPayload;
     req.auth = payload;
     next();
-  } catch {
+  } catch (err) {
     next(new ApiError(401, "Invalid or expired token"));
   }
 }

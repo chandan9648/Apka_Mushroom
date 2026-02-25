@@ -39,7 +39,7 @@ export default function SignupPage() {
         <Card>
           <CardHeader>
             <div className="text-lg font-semibold">Create account</div>
-            <div className="text-sm text-zinc-600">OTP is logged to the backend console in dev.</div>
+
           </CardHeader>
           <CardBody>
             <form onSubmit={submit} className="grid gap-3">

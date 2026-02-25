@@ -29,9 +29,9 @@ export function Header() {
       <div className="container-x flex h-16 items-center justify-between gap-4">
         <Link href="/" className="no-underline">
           <div className="flex items-center gap-2">
-            <div className="grid h-9 w-9 place-items-center rounded-lg bg-zinc-900 text-white text-sm font-semibold">FV</div>
+            <div className="grid h-9 w-9 place-items-center rounded-lg bg-zinc-900 text-white text-sm font-semibold">AM</div>
             <div className="leading-tight">
-              <div className="text-sm font-semibold">FungiVerse</div>
+              <div className="text-sm font-semibold">Apka Mushroom</div>
               <div className="text-xs text-zinc-500">mushroom store</div>
             </div>
           </div>

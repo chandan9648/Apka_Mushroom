@@ -21,9 +21,7 @@ const UserSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true, index: true },
-    // Store hashed password (bcrypt). Kept as `passwordHash` to avoid ambiguity.
     passwordHash: { type: String, required: true },
-    // Legacy field (older DBs). Not required; login code can fall back to it.
     password: { type: String },
     role: { type: String, enum: ["user", "admin"], default: "user", index: true },
     isEmailVerified: { type: Boolean, default: false },

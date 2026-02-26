@@ -6,6 +6,7 @@ import { OtpTokenModel } from "../models/OtpToken.js";
 import { hashPassword, verifyPassword } from "../utils/password.js";
 import { randomNumericCode, sha256 } from "../utils/crypto.js";
 import { signAccessToken, signRefreshToken } from "../utils/jwt.js";
+import { sendOtpEmail } from "../utils/email.js";
 
 
 const emailSchema = z.string().email().transform((v) => v.toLowerCase());
@@ -13,7 +14,8 @@ const emailSchema = z.string().email().transform((v) => v.toLowerCase());
 export const SignupSchema = z.object({
   name: z.string().min(2),
   email: emailSchema,
-  password: z.string().min(8)
+  password: z.string().min(8),
+  role: z.enum(["user", "admin"])
 });
 
 export const LoginSchema = z.object({
@@ -41,18 +43,29 @@ export const RefreshSchema = z.object({
 });
 
 function otpExpiresAt() {
-  return new Date(Date.now() + (Number(process.env.OTP_TTL_MINUTES) * 60 * 1000));
+  const raw = Number(process.env.OTP_TTL_MINUTES);
+  const ttlMinutes = Number.isFinite(raw) && raw > 0 ? raw : 10;
+  return new Date(Date.now() + ttlMinutes * 60 * 1000);
 }
 
-async function issueOtp(userId: string, purpose: "verify_email" | "reset_password") {
+async function issueOtp(params: { userId: string; email: string; purpose: "verify_email" | "reset_password" }) {
   const code = randomNumericCode(6);
   const codeHash = sha256(code);
+  const ttlMinutes = Number(process.env.OTP_TTL_MINUTES) || 10;
 
-  await OtpTokenModel.deleteMany({ userId, purpose });
-  await OtpTokenModel.create({ userId, purpose, codeHash, expiresAt: otpExpiresAt() });
+  await OtpTokenModel.deleteMany({ userId: params.userId, purpose: params.purpose });
+  await OtpTokenModel.create({ userId: params.userId, purpose: params.purpose, codeHash, expiresAt: otpExpiresAt() });
 
  
-  console.log(`[OTP:${purpose}] user=${userId} code=${code}`);
+  console.log(`[OTP:${params.purpose}] user=${params.userId} code=${code}`);
+
+
+  await sendOtpEmail({
+    to: params.email,
+    code,
+    purpose: params.purpose,
+    ttlMinutes,
+  });
 
   return code;
 }
@@ -67,11 +80,12 @@ export const signup = asyncHandler(async (req, res) => {
     name: body.name,
     email: body.email,
     passwordHash: await hashPassword(body.password),
-    role: "user",
+    role: body.role,
     isEmailVerified: false
   });
 
-  await issueOtp(user._id.toString(), "verify_email");
+  //otp generated
+  await issueOtp({ userId: user._id.toString(), email: user.email, purpose: "verify_email" });
 
   res.status(201).json({
     message: "Account created. Please verify email with OTP.",
@@ -79,6 +93,7 @@ export const signup = asyncHandler(async (req, res) => {
   });
 });
 
+//email verification
 export const verifyEmail = asyncHandler(async (req, res) => {
   const body = VerifyEmailSchema.parse(req.body);
 
@@ -99,6 +114,7 @@ export const verifyEmail = asyncHandler(async (req, res) => {
   res.json({ message: "Email verified" });
 });
 
+//login controller
 export const login = asyncHandler(async (req, res) => {
   const body = LoginSchema.parse(req.body);
 
@@ -112,7 +128,7 @@ export const login = asyncHandler(async (req, res) => {
   if (!ok) throw new ApiError(401, "Invalid credentials");
 
   if (!user.isEmailVerified) {
-    await issueOtp(user._id.toString(), "verify_email");
+    await issueOtp({ userId: user._id.toString(), email: user.email, purpose: "verify_email" });
     throw new ApiError(403, "Email not verified. OTP re-sent.", { code: "EMAIL_NOT_VERIFIED" });
   }
 
@@ -154,7 +170,7 @@ export const forgotPassword = asyncHandler(async (req, res) => {
     return res.json({ message: "If that email exists, OTP has been sent." });
   }
 
-  await issueOtp(user._id.toString(), "reset_password");
+  await issueOtp({ userId: user._id.toString(), email: user.email, purpose: "reset_password" });
   res.json({ message: "OTP generated for password reset" });
 });
 

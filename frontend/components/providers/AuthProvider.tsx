@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { apiFetchJson, ApiError } from "@/lib/api";
+import { axiosErrorMessage } from "@/lib/axios";
 import type { User } from "@/lib/types";
 
 type AuthState = {
@@ -107,6 +108,9 @@ export function useAuth() {
 
 export function authErrorMessage(err: unknown) {
   if (err instanceof ApiError) return err.message;
+  // If you switch some calls to axios, keep a consistent message.
+  const axiosMsg = axiosErrorMessage(err);
+  if (axiosMsg && axiosMsg !== "Something went wrong") return axiosMsg;
   if (err instanceof Error) return err.message;
   return "Something went wrong";
 }

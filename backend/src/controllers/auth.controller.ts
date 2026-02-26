@@ -51,8 +51,7 @@ async function issueOtp(userId: string, purpose: "verify_email" | "reset_passwor
   await OtpTokenModel.deleteMany({ userId, purpose });
   await OtpTokenModel.create({ userId, purpose, codeHash, expiresAt: otpExpiresAt() });
 
-  // Dev-only OTP delivery: log to console.
-  // eslint-disable-next-line no-console
+ 
   console.log(`[OTP:${purpose}] user=${userId} code=${code}`);
 
   return code;
@@ -106,7 +105,10 @@ export const login = asyncHandler(async (req, res) => {
   const user = await UserModel.findOne({ email: body.email });
   if (!user) throw new ApiError(401, "Invalid credentials");
 
-  const ok = await verifyPassword(body.password, user.passwordHash);
+  const storedHash = (user as any).passwordHash ?? (user as any).password;
+  if (!storedHash) throw new ApiError(500, "User password hash missing");
+
+  const ok = await verifyPassword(body.password, storedHash);
   if (!ok) throw new ApiError(401, "Invalid credentials");
 
   if (!user.isEmailVerified) {
@@ -167,7 +169,9 @@ export const resetPassword = asyncHandler(async (req, res) => {
   if (token.expiresAt.getTime() < Date.now()) throw new ApiError(400, "OTP expired");
   if (sha256(body.code) !== token.codeHash) throw new ApiError(400, "Invalid OTP");
 
-  user.password = await hashPassword(body.newPassword);
+  (user as any).passwordHash = await hashPassword(body.newPassword);
+  // Optional: clear legacy field to avoid confusion
+  (user as any).password = undefined;
   await user.save();
   await OtpTokenModel.deleteMany({ userId: user._id, purpose: "reset_password" });
 

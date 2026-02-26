@@ -71,7 +71,7 @@ export default function CartPage() {
                   <div className="flex gap-4">
                     <div className="h-20 w-24 overflow-hidden rounded-lg bg-zinc-50">
                       {it.image ? (
-                        // eslint-disable-next-line @next/next/no-img-element
+                        
                         <img src={it.image} alt={it.name} className="h-full w-full object-cover" />
                       ) : (
                         <div className="grid h-full w-full place-items-center text-xs text-zinc-500">No image</div>

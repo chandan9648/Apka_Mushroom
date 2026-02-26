@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth, authErrorMessage } from "@/components/providers/AuthProvider";
 import { ApiError } from "@/lib/api";
+import { axiosErrorCode } from "@/lib/axios";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Card, CardBody, CardHeader } from "@/components/ui/Card";
@@ -13,7 +14,6 @@ export default function LoginPage() {
   const router = useRouter();
   const sp = useSearchParams();
   const next = sp.get("next") || "/";
-
   const { login } = useAuth();
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
@@ -32,6 +32,8 @@ export default function LoginPage() {
       router.push(next);
     } catch (err) {
       if (err instanceof ApiError && err.code === "EMAIL_NOT_VERIFIED") {
+        setNeedsVerify(true);
+      } else if (axiosErrorCode(err) === "EMAIL_NOT_VERIFIED") {
         setNeedsVerify(true);
       }
       setError(authErrorMessage(err));

@@ -167,7 +167,7 @@ export const resetPassword = asyncHandler(async (req, res) => {
   if (token.expiresAt.getTime() < Date.now()) throw new ApiError(400, "OTP expired");
   if (sha256(body.code) !== token.codeHash) throw new ApiError(400, "Invalid OTP");
 
-  user.passwordHash = await hashPassword(body.newPassword);
+  user.password = await hashPassword(body.newPassword);
   await user.save();
   await OtpTokenModel.deleteMany({ userId: user._id, purpose: "reset_password" });
 

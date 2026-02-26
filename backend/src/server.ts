@@ -1,6 +1,4 @@
 import dotenv from "dotenv";
-import "dotenv/config";
-
 import http from "http";
 import { Server as SocketIOServer } from "socket.io";
 import { createApp } from "./app.js";

@@ -1,5 +1,6 @@
 import mongoose, { type InferSchemaType } from "mongoose";
 
+//address subdocument schema
 const AddressSchema = new mongoose.Schema(
   {
     label: { type: String },
@@ -15,6 +16,7 @@ const AddressSchema = new mongoose.Schema(
   { _id: false }
 );
 
+//main user schema
 const UserSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },

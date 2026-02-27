@@ -18,46 +18,45 @@ export default async function HomePage() {
 	return (
 		<div>
 			<section className="border-b border-zinc-200 bg-amber-50">
-				<div className="container-x py-8">
-					<div className="grid grid-cols-1 overflow-hidden border border-black/10 bg-white lg:grid-cols-2">
-						<div className="relative bg-zinc-100">
-							<div className="aspect-[4/3] w-full lg:aspect-auto lg:h-full">
-								{heroImage ? (
-									
-									<img src={heroImage} alt="Featured mushrooms" className="h-full w-full object-cover" />
-								) : (
-									<Image
-										src={mush}
-										alt="Mushrooms hero"
-										className="h-full w-full "
-										priority
-										sizes="(min-width: 1024px) 50vw, 100vw"
-									/>
-								)}
-							</div>
-						</div>
+				<div className="relative h-[70vh] min-h-[420px] w-full overflow-hidden border border-black/10 bg-zinc-100">
+					{heroImage ? (
+						<img
+							src={heroImage}
+							alt="Featured mushrooms"
+							className="absolute inset-0 h-full w-full "
+						/>
+					) : (
+						<Image
+							src={mush}
+							alt="Mushrooms hero"
+							fill
+							className="object-cover"
+							priority
+							sizes="100vw"
+						/>
+					)}
+					<div className="absolute inset-0 bg-black/45" />
 
-						<div className="bg-zinc-900">
-							<div className="flex h-full flex-col justify-center px-6 py-10 sm:px-10">
-								<div className="max-w-xl">
-									<h1 className="text-4xl font-semibold leading-tight tracking-tight text-white sm:text-5xl">
-										Embrace the
-										<br />
-										Superfood
-										<br />
-										Revolution
-									</h1>
-									<p className="mt-4 text-sm text-zinc-200 sm:text-base">
-										Harness the Power of Nature&apos;s Finest Fungi
-									</p>
-									<div className="mt-6">
-										<Link
-											href="/products"
-											className="inline-flex items-center justify-center rounded-xl border-2 border-white bg-white px-8 py-3 text-sm font-semibold text-zinc-900 no-underline hover:bg-zinc-100"
-										>
-											Shop Now
-										</Link>
-									</div>
+					<div className="container-x absolute inset-0">
+						<div className="flex h-full items-start px-6 pt-10 sm:px-10 sm:pt-14">
+							<div className="max-w-xl rounded-2xl bg-zinc-900/70 p-6 sm:p-8">
+								<h1 className="text-4xl font-semibold leading-tight tracking-tight text-white sm:text-5xl">
+									Embrace the
+									<br />
+									Superfood
+									<br />
+									Revolution
+								</h1>
+								<p className="mt-4 text-sm text-zinc-200 sm:text-base">
+									Harness the Power of Nature&apos;s Finest Fungi
+								</p>
+								<div className="mt-6">
+									<Link
+										href="/products"
+										className="inline-flex items-center justify-center rounded-xl border-2 border-white bg-white px-8 py-3 text-sm font-semibold text-zinc-900 no-underline hover:bg-zinc-100"
+									>
+										Shop Now
+									</Link>
 								</div>
 							</div>
 						</div>

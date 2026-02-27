@@ -118,9 +118,9 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-zinc-200">
-      <div className="bg-zinc-900 text-white">
+      <div className="bg-zinc-900  text-white">
         <div className="container-x py-2 text-center text-xs font-medium">
-          Dear Customers, to place your order, make sure your cart totals ₹300 or more!
+          Dear Customers, to place your order, make your day better with Apka Mushroom!
         </div>
       </div>
 

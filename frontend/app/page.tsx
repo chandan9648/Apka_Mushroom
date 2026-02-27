@@ -1,8 +1,11 @@
 import Link from "next/link";
+import Image from "next/image";
 import { apiFetchJson } from "@/lib/api";
 import type { Category, Product } from "@/lib/types";
 import { ProductCard } from "@/components/ProductCard";
 import { Card, CardBody } from "@/components/ui/Card";
+// import heroFallback from "../public/mushroom.jpg";
+import mush from "../public/mush.jpeg";
 
 export default async function HomePage() {
 	const [{ items: featured }, { items: categories }] = await Promise.all([
@@ -10,22 +13,53 @@ export default async function HomePage() {
 		apiFetchJson<{ items: Category[] }>("/api/categories", { cache: "no-store" }),
 	]);
 
+	const heroImage = featured?.[0]?.images?.[0] ?? null;
+
 	return (
 		<div>
-			<section className="border-b border-zinc-200 bg-zinc-50">
-				<div className="container-x py-10">
-					<div className="max-w-2xl">
-						<h1 className="text-3xl font-semibold tracking-tight">Fresh mushrooms, delivered.</h1>
-						<p className="mt-3 text-zinc-600">
-							Browse featured products, add to cart, and checkout via Razorpay using the existing API.
-						</p>
-						<div className="mt-6 flex gap-3">
-							<Link href="/products" className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white no-underline">
-								Shop products
-							</Link>
-							<Link href="/cart" className="rounded-lg border border-zinc-200 bg-white px-4 py-2 text-sm font-medium text-zinc-900 no-underline">
-								View cart
-							</Link>
+			<section className="border-b border-zinc-200 bg-amber-50">
+				<div className="container-x py-8">
+					<div className="grid grid-cols-1 overflow-hidden border border-black/10 bg-white lg:grid-cols-2">
+						<div className="relative bg-zinc-100">
+							<div className="aspect-[4/3] w-full lg:aspect-auto lg:h-full">
+								{heroImage ? (
+									
+									<img src={heroImage} alt="Featured mushrooms" className="h-full w-full object-cover" />
+								) : (
+									<Image
+										src={mush}
+										alt="Mushrooms hero"
+										className="h-full w-full "
+										priority
+										sizes="(min-width: 1024px) 50vw, 100vw"
+									/>
+								)}
+							</div>
+						</div>
+
+						<div className="bg-zinc-900">
+							<div className="flex h-full flex-col justify-center px-6 py-10 sm:px-10">
+								<div className="max-w-xl">
+									<h1 className="text-4xl font-semibold leading-tight tracking-tight text-white sm:text-5xl">
+										Embrace the
+										<br />
+										Superfood
+										<br />
+										Revolution
+									</h1>
+									<p className="mt-4 text-sm text-zinc-200 sm:text-base">
+										Harness the Power of Nature&apos;s Finest Fungi
+									</p>
+									<div className="mt-6">
+										<Link
+											href="/products"
+											className="inline-flex items-center justify-center rounded-xl border-2 border-white bg-white px-8 py-3 text-sm font-semibold text-zinc-900 no-underline hover:bg-zinc-100"
+										>
+											Shop Now
+										</Link>
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>

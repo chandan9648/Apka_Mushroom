@@ -4,7 +4,7 @@ export function Footer() {
       <div className="container-x py-8 text-sm text-zinc-600">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div>© {new Date().getFullYear()} ApkaMushroom</div>
-          <div className="text-xs">API-backed demo storefront</div>
+         
         </div>
       </div>
     </footer>

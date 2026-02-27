@@ -33,8 +33,6 @@ export async function sendOtpEmail(opts: {
   appName?: string;
 }) {
   if (!smtpEnabled()) {
-    // No SMTP configured: keep dev workflow usable.
-    // OTP is already logged by issueOtp().
     return;
   }
 

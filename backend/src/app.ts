@@ -17,6 +17,7 @@ import { couponRouter } from "./routes/coupon.routes.js";
 import { adminRouter } from "./routes/admin.routes.js";
 import { paymentRouter } from "./routes/payment.routes.js";
 import { recommendationRouter } from "./routes/recommendation.routes.js";
+import { bannerRouter } from "./routes/banner.routes.js";
 import process from "process";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -62,6 +63,7 @@ export function createApp() {
   app.use("/api/admin", adminRouter);
   app.use("/api/payments", paymentRouter);
   app.use("/api/recommendations", recommendationRouter);
+  app.use("/api/banners", bannerRouter);
 
   const uploadsDir = path.resolve(__dirname, String(process.env.UPLOADS_DIR));
   app.use("/uploads", express.static(uploadsDir));

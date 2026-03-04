@@ -5,3 +5,4 @@ export * from "./Product.js";
 export * from "./Review.js";
 export * from "./Coupon.js";
 export * from "./Order.js";
+export * from "./Banner.js";

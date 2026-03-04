@@ -57,3 +57,11 @@ export type Order = {
   createdAt: string;
   razorpayOrderId?: string;
 };
+
+export type Banner = {
+  _id: string;
+  imageUrl: string;
+  title: string;
+  isActive: boolean;
+  order: number;
+};

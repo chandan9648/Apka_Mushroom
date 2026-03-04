@@ -1,30 +1,26 @@
 import Link from "next/link";
 import Image from "next/image";
 import { apiFetchJson } from "@/lib/api";
-import type { Category, Product } from "@/lib/types";
+import type { Category, Product, Banner } from "@/lib/types";
 import { ProductCard } from "@/components/ProductCard";
 import { Card, CardBody } from "@/components/ui/Card";
+import { HeroCarousel } from "@/components/HeroCarousel";
 // import heroFallback from "../public/mushroom.jpg";
 import mush from "../public/mush.jpeg";
 
 export default async function HomePage() {
-	const [{ items: featured }, { items: categories }] = await Promise.all([
+	const [{ items: featured }, { items: categories }, { items: banners }] = await Promise.all([
 		apiFetchJson<{ items: Product[] }>("/api/products/featured", { cache: "no-store" }),
 		apiFetchJson<{ items: Category[] }>("/api/categories", { cache: "no-store" }),
+		apiFetchJson<{ items: Banner[] }>("/api/banners", { cache: "no-store" }),
 	]);
-
-	const heroImage = featured?.[0]?.images?.[0] ?? null;
 
 	return (
 		<div>
 			<section className="border-b border-zinc-200 bg-amber-50">
 				<div className="relative h-[70vh] min-h-[420px] w-full overflow-hidden border border-black/10 bg-zinc-100">
-					{heroImage ? (
-						<img
-							src={heroImage}
-							alt="Featured mushrooms"
-							className="absolute inset-0 h-full w-full "
-						/>
+					{banners.length > 0 ? (
+						<HeroCarousel banners={banners} />
 					) : (
 						<Image
 							src={mush}
@@ -35,7 +31,7 @@ export default async function HomePage() {
 							sizes="100vw"
 						/>
 					)}
-					<div className="absolute inset-0 bg-black/45" />
+					<div className="absolute inset-0 bg-black/45 pointer-events-none" />
 
 					<div className="container-x absolute inset-0">
 						<div className="flex h-full items-start px-6 pt-10 sm:px-10 sm:pt-14">

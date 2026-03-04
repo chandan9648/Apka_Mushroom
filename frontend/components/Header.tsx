@@ -138,12 +138,14 @@ export function Header() {
 
           <nav className="hidden items-center gap-8 md:flex">
             <NavLink href="/">Home</NavLink>
-            <Link href="/products" className="text-sm font-medium text-zinc-700 hover:text-zinc-900 no-underline inline-flex items-center gap-1">
-              Shop
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </Link>
+            {user?.role !== "admin" ? (
+              <Link href="/products" className="text-sm font-medium text-zinc-700 hover:text-zinc-900 no-underline inline-flex items-center gap-1">
+                Shop
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </Link>
+            ) : null}
             <NavLink href="/#our-story">Our Story</NavLink>
             <NavLink href="/#blogs">Blogs</NavLink>
             <NavLink href="/#media">Media</NavLink>
@@ -170,16 +172,18 @@ export function Header() {
               </Icon>
             </Link>
 
-            <Link href="/cart" className="no-underline relative" aria-label="Cart">
-              <Icon>
-                <IconCart />
-              </Icon>
-              {count > 0 ? (
-                <span className="absolute right-0 top-0 grid h-5 w-5 -translate-y-1 translate-x-1 place-items-center rounded-full bg-zinc-900 text-[10px] font-semibold text-white">
-                  {count}
-                </span>
-              ) : null}
-            </Link>
+            {user?.role !== "admin" ? (
+              <Link href="/cart" className="no-underline relative" aria-label="Cart">
+                <Icon>
+                  <IconCart />
+                </Icon>
+                {count > 0 ? (
+                  <span className="absolute right-0 top-0 grid h-5 w-5 -translate-y-1 translate-x-1 place-items-center rounded-full bg-zinc-900 text-[10px] font-semibold text-white">
+                    {count}
+                  </span>
+                ) : null}
+              </Link>
+            ) : null}
 
             <button
               type="button"
@@ -213,9 +217,11 @@ export function Header() {
                 <NavLink href="/" className="block py-2" onClick={() => setMobileOpen(false)}>
                   Home
                 </NavLink>
-                <NavLink href="/products" className="block py-2" onClick={() => setMobileOpen(false)}>
-                  Shop
-                </NavLink>
+                {user?.role !== "admin" ? (
+                  <NavLink href="/products" className="block py-2" onClick={() => setMobileOpen(false)}>
+                    Shop
+                  </NavLink>
+                ) : null}
                 <NavLink href="/#our-story" className="block py-2" onClick={() => setMobileOpen(false)}>
                   Our Story
                 </NavLink>

@@ -4,12 +4,15 @@ import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { useCart } from "@/components/providers/CartProvider";
+import { useAuth } from "@/components/providers/AuthProvider";
 import type { Product } from "@/lib/types";
 import { formatMoney } from "@/lib/money";
 
 export function ProductCard({ product }: { product: Product }) {
+  const { user } = useAuth();
   const { add } = useCart();
   const image = product.images?.[0];
+  const isAdmin = user?.role === "admin";
 
   return (
     <Card className="overflow-hidden">
@@ -39,9 +42,11 @@ export function ProductCard({ product }: { product: Product }) {
 
         <div className="mt-3 flex items-center justify-between gap-2">
           <div className="text-xs text-zinc-500">Stock: {product.stock}</div>
-          <Button onClick={() => add(product, 1)} disabled={product.stock <= 0}>
-            Add
-          </Button>
+          {!isAdmin ? (
+            <Button onClick={() => add(product, 1)} disabled={product.stock <= 0}>
+              Add
+            </Button>
+          ) : null}
         </div>
       </div>
     </Card>

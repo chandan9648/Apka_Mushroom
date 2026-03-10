@@ -70,8 +70,7 @@ export default function CartPage() {
                 <CardBody>
                   <div className="flex gap-4">
                     <div className="h-20 w-24 overflow-hidden rounded-lg bg-zinc-50">
-                      {it.image ? (
-                        
+                      {it.image ? ( 
                         <img src={it.image} alt={it.name} className="h-full w-full object-cover" />
                       ) : (
                         <div className="grid h-full w-full place-items-center text-xs text-zinc-500">No image</div>

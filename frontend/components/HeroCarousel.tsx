@@ -54,7 +54,6 @@ export function HeroCarousel({ banners }: { banners: Banner[] }) {
         </div>
       )}
       
-
       {/* Arrow buttons */}
       {total > 1 && (
         <>

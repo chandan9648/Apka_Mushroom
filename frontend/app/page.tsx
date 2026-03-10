@@ -18,7 +18,7 @@ export default async function HomePage() {
 	return (
 		<div>
 			<section className="border-b border-zinc-200 bg-amber-50">
-				<div className="relative h-[70vh] min-h-[420px] w-full overflow-hidden border border-black/10 bg-zinc-100">
+				<div className="relative h-[100vh] min-h-[420px] w-full overflow-hidden border border-black/10 bg-zinc-100">
 					{banners.length > 0 ? (
 						<HeroCarousel banners={banners} />
 					) : (

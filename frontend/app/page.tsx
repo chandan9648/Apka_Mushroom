@@ -35,7 +35,7 @@ export default async function HomePage() {
 
 					<div className="container-x absolute inset-0">
 						<div className="flex h-full items-start px-6 pt-10 sm:px-10 sm:pt-14">
-							<div className="max-w-xl rounded-2xl bg-zinc-900/70 p-6 sm:p-8">
+							<div className="max-w-xl rounded-2xl bg-zinc-900/70 ml-30 mt-40 p-6 sm:p-8 ">
 								<h1 className="text-4xl font-semibold leading-tight tracking-tight text-white sm:text-5xl">
 									Embrace the
 									<br />

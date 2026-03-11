@@ -24,16 +24,25 @@ function NavLink({
     <Link
       href={href}
       onClick={onClick}
-      className={`text-sm font-medium ${active ? "text-zinc-900" : "text-zinc-700 hover:text-zinc-900"} no-underline ${className ?? ""}`}
+      className={`relative text-sm font-medium transition-colors no-underline after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:rounded-full after:bg-amber-500 after:transition-all after:duration-300 hover:after:w-full ${
+        active
+          ? "text-zinc-900 after:w-full after:bg-amber-500"
+          : "text-zinc-600 hover:text-zinc-900"
+      } ${className ?? ""}`}
     >
       {children}
     </Link>
   );
 }
 
-function Icon({ children }: { children: ReactNode }) {
+function IconBtn({ children, label }: { children: ReactNode; label?: string }) {
   return (
-    <span className="grid h-9 w-9 place-items-center rounded-full text-zinc-900 hover:bg-black/5">{children}</span>
+    <span
+      aria-label={label}
+      className="grid h-9 w-9 place-items-center rounded-full text-zinc-700 hover:bg-black/6 hover:text-zinc-900 transition-colors"
+    >
+      {children}
+    </span>
   );
 }
 
@@ -111,37 +120,55 @@ export function Header() {
   const { count } = useCart();
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     setMobileOpen(false);
   }, [pathname]);
 
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
-    <header className="sticky top-0 z-40 border-b border-zinc-200">
-      <div className="bg-zinc-900  text-white">
-        <div className="container-x py-2 text-center text-xs font-medium">
-          Dear Customers, to place your order, make your day better with Apka Mushroom!
+    <header className={`sticky top-0 z-40 border-b border-zinc-200 transition-shadow duration-300 ${scrolled ? "shadow-md" : "shadow-none"}`}>
+      {/* Announcement banner */}
+      <div className="bg-zinc-900 text-white">
+        <div className="container-x py-2 text-center text-xs font-medium tracking-wide">
+          <span className="text-amber-400">✦</span>
+          {" "}Free shipping on orders above ₹499 · 100% Organic &amp; Lab Tested{" "}
+          <span className="text-amber-400">✦</span>
         </div>
       </div>
 
+      {/* Main nav bar */}
       <div className="bg-amber-50">
         <div className="container-x flex h-20 items-center justify-between gap-4">
-          <Link href="/" className="no-underline">
+          {/* Logo */}
+          <Link href="/" className="no-underline shrink-0">
             <div className="flex items-center gap-3">
-              <div className="grid h-10 w-10 place-items-center rounded-full bg-zinc-900 text-white text-sm font-semibold">AM</div>
+              <div className="grid h-11 w-11 place-items-center rounded-full bg-amber-400 text-zinc-900 text-sm font-bold shadow-sm">
+                AM
+              </div>
               <div className="leading-tight">
-                <div className="text-sm font-semibold tracking-tight">Apka Mushroom</div>
-                <div className="text-xs text-zinc-600">kingdom of health</div>
+                <div className="text-sm font-bold tracking-tight text-zinc-900">Apka Mushroom</div>
+                <div className="text-xs text-zinc-500">kingdom of health</div>
               </div>
             </div>
           </Link>
 
+          {/* Desktop nav */}
           <nav className="hidden items-center gap-8 md:flex">
             <NavLink href="/">Home</NavLink>
             {user?.role !== "admin" ? (
-              <Link href="/products" className="text-sm font-medium text-zinc-700 hover:text-zinc-900 no-underline inline-flex items-center gap-1">
+              <Link
+                href="/products"
+                className="relative text-sm font-medium text-zinc-600 hover:text-zinc-900 no-underline inline-flex items-center gap-1 transition-colors after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:rounded-full after:bg-amber-500 after:transition-all after:duration-300 hover:after:w-full"
+              >
                 Shop
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                   <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </Link>
@@ -153,32 +180,25 @@ export function Header() {
             {user?.role === "admin" ? <NavLink href="/admin">Admin</NavLink> : null}
           </nav>
 
-          <div className="flex items-center gap-1">
+          {/* Icon actions */}
+          <div className="flex items-center gap-0.5">
             <Link href="/products" className="no-underline" aria-label="Search">
-              <Icon>
-                <IconSearch />
-              </Icon>
+              <IconBtn><IconSearch /></IconBtn>
             </Link>
 
             <Link href={user ? "/account" : "/auth/login"} className="no-underline" aria-label="Account">
-              <Icon>
-                <IconUser />
-              </Icon>
+              <IconBtn><IconUser /></IconBtn>
             </Link>
 
             <Link href="/account" className="no-underline" aria-label="Favorites">
-              <Icon>
-                <IconHeart />
-              </Icon>
+              <IconBtn><IconHeart /></IconBtn>
             </Link>
 
             {user?.role !== "admin" ? (
               <Link href="/cart" className="no-underline relative" aria-label="Cart">
-                <Icon>
-                  <IconCart />
-                </Icon>
+                <IconBtn><IconCart /></IconBtn>
                 {count > 0 ? (
-                  <span className="absolute right-0 top-0 grid h-5 w-5 -translate-y-1 translate-x-1 place-items-center rounded-full bg-zinc-900 text-[10px] font-semibold text-white">
+                  <span className="absolute right-0 top-0 grid h-5 w-5 -translate-y-0.5 translate-x-0.5 place-items-center rounded-full bg-amber-500 text-[10px] font-bold text-zinc-900 shadow-sm">
                     {count}
                   </span>
                 ) : null}
@@ -193,65 +213,71 @@ export function Header() {
               aria-expanded={mobileOpen}
               aria-controls="mobile-menu"
             >
-              <span className="grid h-9 w-9 place-items-center rounded-full text-zinc-900 hover:bg-black/5">
-                {mobileOpen ? <IconClose /> : <IconMenu />}
-              </span>
+              <IconBtn>{mobileOpen ? <IconClose /> : <IconMenu />}</IconBtn>
             </button>
 
             {user ? (
               <button
                 type="button"
                 onClick={logout}
-                className="ml-2 hidden rounded-full border border-zinc-300 bg-white px-4 py-2 text-sm font-medium text-zinc-900 hover:bg-zinc-50 md:inline-flex"
+                className="ml-2 hidden md:inline-flex rounded-full border border-zinc-300 bg-white px-4 py-2 text-sm font-medium text-zinc-900 hover:bg-zinc-50 hover:border-zinc-400 transition-colors"
               >
                 Log out
               </button>
-            ) : null}
+            ) : (
+              <Link
+                href="/auth/login"
+                className="ml-2 hidden md:inline-flex no-underline rounded-full bg-zinc-900 px-5 py-2 text-sm font-medium text-white hover:bg-zinc-700 transition-colors"
+              >
+                Log in
+              </Link>
+            )}
           </div>
         </div>
 
+        {/* Mobile menu */}
         {mobileOpen ? (
-          <div id="mobile-menu" className="border-t border-black/5 md:hidden">
-            <div className="container-x py-3">
-              <nav className="flex flex-col">
-                <NavLink href="/" className="block py-2" onClick={() => setMobileOpen(false)}>
-                  Home
-                </NavLink>
-                {user?.role !== "admin" ? (
-                  <NavLink href="/products" className="block py-2" onClick={() => setMobileOpen(false)}>
-                    Shop
-                  </NavLink>
-                ) : null}
-                <NavLink href="/#our-story" className="block py-2" onClick={() => setMobileOpen(false)}>
-                  Our Story
-                </NavLink>
-                <NavLink href="/#blogs" className="block py-2" onClick={() => setMobileOpen(false)}>
-                  Blogs
-                </NavLink>
-                <NavLink href="/#media" className="block py-2" onClick={() => setMobileOpen(false)}>
-                  Media
-                </NavLink>
-                <NavLink href="/#recipes" className="block py-2" onClick={() => setMobileOpen(false)}>
-                  Recipes
-                </NavLink>
-                {user?.role === "admin" ? (
-                  <NavLink href="/admin" className="block py-2" onClick={() => setMobileOpen(false)}>
-                    Admin
-                  </NavLink>
-                ) : null}
-
-                {user ? (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      logout();
-                      setMobileOpen(false);
-                    }}
-                    className="mt-2 inline-flex w-fit rounded-full border border-zinc-300 bg-white px-4 py-2 text-sm font-medium text-zinc-900 hover:bg-zinc-50"
+          <div id="mobile-menu" className="border-t border-amber-200 md:hidden bg-amber-50">
+            <div className="container-x py-4">
+              <nav className="flex flex-col gap-1">
+                {[
+                  { href: "/", label: "Home" },
+                  ...(user?.role !== "admin" ? [{ href: "/products", label: "Shop" }] : []),
+                  { href: "/#our-story", label: "Our Story" },
+                  { href: "/#blogs", label: "Blogs" },
+                  { href: "/#media", label: "Media" },
+                  { href: "/#recipes", label: "Recipes" },
+                  ...(user?.role === "admin" ? [{ href: "/admin", label: "Admin" }] : []),
+                ].map((l) => (
+                  <Link
+                    key={l.href}
+                    href={l.href}
+                    onClick={() => setMobileOpen(false)}
+                    className="block rounded-lg px-3 py-2.5 text-sm font-medium text-zinc-700 hover:bg-amber-100 hover:text-zinc-900 no-underline transition-colors"
                   >
-                    Log out
-                  </button>
-                ) : null}
+                    {l.label}
+                  </Link>
+                ))}
+
+                <div className="mt-3 pt-3 border-t border-amber-200">
+                  {user ? (
+                    <button
+                      type="button"
+                      onClick={() => { logout(); setMobileOpen(false); }}
+                      className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2.5 text-left text-sm font-medium text-zinc-900 hover:bg-zinc-50 transition-colors"
+                    >
+                      Log out
+                    </button>
+                  ) : (
+                    <Link
+                      href="/auth/login"
+                      onClick={() => setMobileOpen(false)}
+                      className="block rounded-lg bg-zinc-900 px-4 py-2.5 text-sm font-medium text-white no-underline text-center"
+                    >
+                      Log in
+                    </Link>
+                  )}
+                </div>
               </nav>
             </div>
           </div>

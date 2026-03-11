@@ -2,13 +2,30 @@
 
 @layer base {
 	html {
-		@apply h-full;
+		@apply h-full scroll-smooth;
 	}
 	body {
 		@apply min-h-full bg-white text-zinc-900;
+		font-feature-settings: "rlig" 1, "calt" 1;
 	}
 	a {
 		@apply underline-offset-4;
+	}
+
+	/* Custom scrollbar */
+	::-webkit-scrollbar {
+		width: 6px;
+		height: 6px;
+	}
+	::-webkit-scrollbar-track {
+		background: #f4f4f5;
+	}
+	::-webkit-scrollbar-thumb {
+		border-radius: 9999px;
+		background: #d4d4d8;
+	}
+	::-webkit-scrollbar-thumb:hover {
+		background: #a1a1aa;
 	}
 }
 
@@ -16,5 +33,16 @@
 	.container-x {
 		@apply mx-auto w-full max-w-6xl px-4;
 	}
+	.section-title {
+		@apply text-2xl font-bold tracking-tight text-zinc-900;
+	}
+	.line-fade {
+		-webkit-mask-image: linear-gradient(to right, black 60%, transparent 100%);
+		mask-image: linear-gradient(to right, black 60%, transparent 100%);
+	}
 }
 
+/* Smooth image transitions */
+img {
+	transition: transform 0.35s ease, opacity 0.3s ease;
+}

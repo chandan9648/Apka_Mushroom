@@ -8,6 +8,8 @@ const ProductSchema = new mongoose.Schema(
     price: { type: Number, required: true },
     compareAtPrice: { type: Number },
     currency: { type: String, default: "INR" },
+    weight: { type: Number },
+    weightUnit: { type: String, default: "g" },
     images: { type: [String], default: [] },
     description: { type: String, default: "" },
     benefits: { type: [String], default: [] },

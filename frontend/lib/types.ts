@@ -14,6 +14,8 @@ export type Product = {
   price: number;
   compareAtPrice?: number;
   currency?: string;
+  weight?: number;
+  weightUnit?: string;
   images: string[];
   description?: string;
   benefits?: string[];

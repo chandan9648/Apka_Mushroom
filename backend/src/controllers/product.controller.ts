@@ -10,6 +10,8 @@ export const UpsertProductSchema = z.object({
   categorySlug: z.string().min(1),
   price: z.number().positive(),
   compareAtPrice: z.number().positive().optional(),
+  weight: z.number().positive().optional(),
+  weightUnit: z.string().optional(),
   images: z.array(z.string()).optional(),
   description: z.string().optional(),
   benefits: z.array(z.string()).optional(),
@@ -101,6 +103,8 @@ export const createProduct = asyncHandler(async (req, res) => {
     category: category._id,
     price: body.price,
     compareAtPrice: body.compareAtPrice,
+    weight: body.weight,
+    weightUnit: body.weightUnit ?? "g",
     images: body.images ?? [],
     description: body.description ?? "",
     benefits: body.benefits ?? [],
@@ -134,6 +138,8 @@ export const updateProduct = asyncHandler(async (req, res) => {
 
   if (body.price != null) product.price = body.price;
   if (body.compareAtPrice !== undefined) product.compareAtPrice = body.compareAtPrice;
+  if (body.weight !== undefined) product.weight = body.weight;
+  if (body.weightUnit !== undefined) product.weightUnit = body.weightUnit;
   if (body.images !== undefined) product.images = body.images;
   if (body.description !== undefined) product.description = body.description;
   if (body.benefits !== undefined) product.benefits = body.benefits;

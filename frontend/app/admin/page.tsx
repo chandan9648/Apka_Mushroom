@@ -540,6 +540,7 @@ export default function AdminPage() {
                           value={productCategory}
                           onChange={(e) => setProductCategory(e.target.value)}
                         >
+                          <option value="">-- Select Category --</option>
                           {categories.map((c) => (
                             <option key={c._id} value={c.slug}>{c.name}</option>
                           ))}
@@ -673,14 +674,24 @@ export default function AdminPage() {
                         />
                       </div>
                       <div className="grid gap-1">
-                        <label className="text-sm font-medium text-zinc-900">Stock</label>
+                        <label className="text-sm font-medium text-zinc-900">Weight (g)</label>
                         <Input
                           type="number"
-                          placeholder="0"
-                          value={editProductStock}
-                          onChange={(e) => setEditProductStock(e.target.value)}
+                          placeholder="200"
+                          value={editProductWeight}
+                          onChange={(e) => setEditProductWeight(e.target.value)}
                         />
                       </div>
+                    </div>
+
+                    <div className="grid gap-1">
+                      <label className="text-sm font-medium text-zinc-900">Stock</label>
+                      <Input
+                        type="number"
+                        placeholder="0"
+                        value={editProductStock}
+                        onChange={(e) => setEditProductStock(e.target.value)}
+                      />
                     </div>
 
                     {categories.length > 0 && (

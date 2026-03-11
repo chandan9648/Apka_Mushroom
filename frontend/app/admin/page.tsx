@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/Input";
 type AdminStats = { users: number; products: number; orders: number };
 type Banner = { _id: string; imageUrl: string; title: string; isActive: boolean; order: number };
 type CategoryItem = { _id: string; name: string; slug: string };
-type ProductItem = { _id: string; name: string; slug: string; price: number; stock: number; images: string[]; isFeatured?: boolean };
+type ProductItem = { _id: string; name: string; slug: string; price: number; stock: number; images: string[]; isFeatured?: boolean; weight?: number; weightUnit?: string };
 
 function formatCount(value: number) {
   return new Intl.NumberFormat(undefined, { maximumFractionDigits: 0 }).format(value);
@@ -54,6 +54,7 @@ export default function AdminPage() {
   const [productName, setProductName] = React.useState("");
   const [productPrice, setProductPrice] = React.useState("");
   const [productStock, setProductStock] = React.useState("0");
+  const [productWeight, setProductWeight] = React.useState("");
   const [productCategory, setProductCategory] = React.useState("");
   const [productDescription, setProductDescription] = React.useState("");
   const [productFeatured, setProductFeatured] = React.useState(true);
@@ -65,6 +66,19 @@ export default function AdminPage() {
   const [categories, setCategories] = React.useState<CategoryItem[]>([]);
   const [products, setProducts] = React.useState<ProductItem[]>([]);
   const [productsLoading, setProductsLoading] = React.useState(false);
+
+  // Edit product state
+  const [editingProductId, setEditingProductId] = React.useState<string | null>(null);
+  const [editProductName, setEditProductName] = React.useState("");
+  const [editProductPrice, setEditProductPrice] = React.useState("");
+  const [editProductStock, setEditProductStock] = React.useState("");
+  const [editProductWeight, setEditProductWeight] = React.useState("");
+  const [editProductCategory, setEditProductCategory] = React.useState("");
+  const [editProductDescription, setEditProductDescription] = React.useState("");
+  const [editProductFeatured, setEditProductFeatured] = React.useState(false);
+  const [editProductImage, setEditProductImage] = React.useState("");
+  const [updatingProduct, setUpdatingProduct] = React.useState(false);
+  const [updateError, setUpdateError] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     if (!ready) return;
@@ -219,23 +233,31 @@ export default function AdminPage() {
 
     setCreatingProduct(true);
     try {
+      const productData: any = {
+        name: productName.trim(),
+        categorySlug: productCategory,
+        price: Number(productPrice),
+        images: [uploadUrl],
+        description: productDescription,
+        stock: Number(productStock) || 0,
+        isFeatured: productFeatured,
+      };
+
+      if (productWeight) {
+        productData.weight = Number(productWeight);
+        productData.weightUnit = "g";
+      }
+
       await apiFetchJson("/api/products", {
         method: "POST",
         token: accessToken,
-        body: JSON.stringify({
-          name: productName.trim(),
-          categorySlug: productCategory,
-          price: Number(productPrice),
-          images: [uploadUrl],
-          description: productDescription,
-          stock: Number(productStock) || 0,
-          isFeatured: productFeatured,
-        }),
+        body: JSON.stringify(productData),
       });
       setProductSuccess(`"${productName}" added successfully!`);
       setProductName("");
       setProductPrice("");
       setProductStock("0");
+      setProductWeight("");
       setProductDescription("");
       setProductFeatured(true);
       setUploadUrl(null);
@@ -255,6 +277,78 @@ export default function AdminPage() {
       void fetchProducts();
     } catch {
       /* ignore */
+    }
+  };
+
+  const startEditProduct = (product: ProductItem) => {
+    setEditingProductId(product._id);
+    setEditProductName(product.name);
+    setEditProductPrice(String(product.price));
+    setEditProductStock(String(product.stock));
+    setEditProductWeight(product.weight ? String(product.weight) : "");
+    setEditProductCategory("");
+    setEditProductDescription("");
+    setEditProductFeatured(product.isFeatured ?? false);
+    setEditProductImage(product.images?.[0] ?? "");
+    setUpdateError(null);
+  };
+
+  const cancelEdit = () => {
+    setEditingProductId(null);
+    setEditProductName("");
+    setEditProductPrice("");
+    setEditProductStock("");
+    setEditProductWeight("");
+    setEditProductCategory("");
+    setEditProductDescription("");
+    setEditProductFeatured(false);
+    setEditProductImage("");
+    setUpdateError(null);
+  };
+
+  const onUpdateProduct = async () => {
+    setUpdateError(null);
+
+    if (!accessToken) { setUpdateError("Not authenticated"); return; }
+    if (!editingProductId) return;
+    if (!editProductName.trim()) { setUpdateError("Product name required hai"); return; }
+    if (!editProductPrice || Number(editProductPrice) <= 0) { setUpdateError("Valid price daalein"); return; }
+
+    setUpdatingProduct(true);
+    try {
+      const updateData: any = {
+        name: editProductName.trim(),
+        price: Number(editProductPrice),
+        stock: Number(editProductStock) || 0,
+        isFeatured: editProductFeatured,
+      };
+
+      if (editProductWeight) {
+        updateData.weight = Number(editProductWeight);
+        updateData.weightUnit = "g";
+      }
+      if (editProductCategory) {
+        updateData.categorySlug = editProductCategory;
+      }
+      if (editProductDescription) {
+        updateData.description = editProductDescription;
+      }
+      if (editProductImage) {
+        updateData.images = [editProductImage];
+      }
+
+      await apiFetchJson(`/api/products/${editingProductId}`, {
+        method: "PUT",
+        token: accessToken,
+        body: JSON.stringify(updateData),
+      });
+
+      cancelEdit();
+      void fetchProducts();
+    } catch (err) {
+      setUpdateError(authErrorMessage(err));
+    } finally {
+      setUpdatingProduct(false);
     }
   };
 
@@ -419,14 +513,24 @@ export default function AdminPage() {
                           />
                         </div>
                         <div className="grid gap-1">
-                          <label className="text-sm font-medium text-zinc-900">Stock</label>
+                          <label className="text-sm font-medium text-zinc-900">Weight (g)</label>
                           <Input
                             type="number"
-                            placeholder="0"
-                            value={productStock}
-                            onChange={(e) => setProductStock(e.target.value)}
+                            placeholder="200"
+                            value={productWeight}
+                            onChange={(e) => setProductWeight(e.target.value)}
                           />
                         </div>
+                      </div>
+
+                      <div className="grid gap-1">
+                        <label className="text-sm font-medium text-zinc-900">Stock</label>
+                        <Input
+                          type="number"
+                          placeholder="0"
+                          value={productStock}
+                          onChange={(e) => setProductStock(e.target.value)}
+                        />
                       </div>
 
                       <div className="grid gap-1">
@@ -513,15 +617,126 @@ export default function AdminPage() {
                         <div className="text-xs text-zinc-600">₹{p.price} · Stock: {p.stock}</div>
                         {p.isFeatured && <span className="text-[10px] font-medium text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded">Featured</span>}
                       </div>
-                      <Button variant="secondary" className="mt-2 w-full" onClick={() => onDeleteProduct(p._id)}>
-                        Delete
-                      </Button>
+                      <div className="mt-2 flex gap-2">
+                        <Button variant="secondary" className="flex-1 text-xs" onClick={() => startEditProduct(p)}>
+                          Edit
+                        </Button>
+                        <Button variant="secondary" className="flex-1 text-xs" onClick={() => onDeleteProduct(p._id)}>
+                          Delete
+                        </Button>
+                      </div>
                     </CardBody>
                   </Card>
                 ))}
               </div>
             )}
           </div>
+
+          {/* Edit Product Modal */}
+          {editingProductId ? (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+              <Card className="w-full max-w-md max-h-[90vh] overflow-y-auto">
+                <CardHeader>
+                  <div className="text-sm font-semibold text-zinc-900">Edit Product</div>
+                  <div className="mt-1 text-xs text-zinc-500">Update product details</div>
+                </CardHeader>
+                <CardBody>
+                  <div className="grid gap-3">
+                    {/* Current image preview */}
+                    {editProductImage ? (
+                      <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-2">
+                        <img
+                          src={editProductImage}
+                          alt="Product"
+                          className="w-full rounded-lg border border-zinc-200 aspect-[4/3] object-cover"
+                        />
+                      </div>
+                    ) : null}
+
+                    <div className="grid gap-1">
+                      <label className="text-sm font-medium text-zinc-900">Product Name *</label>
+                      <Input
+                        placeholder="e.g. Oyster Mushroom 200g"
+                        value={editProductName}
+                        onChange={(e) => setEditProductName(e.target.value)}
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="grid gap-1">
+                        <label className="text-sm font-medium text-zinc-900">Price (₹) *</label>
+                        <Input
+                          type="number"
+                          placeholder="299"
+                          value={editProductPrice}
+                          onChange={(e) => setEditProductPrice(e.target.value)}
+                        />
+                      </div>
+                      <div className="grid gap-1">
+                        <label className="text-sm font-medium text-zinc-900">Stock</label>
+                        <Input
+                          type="number"
+                          placeholder="0"
+                          value={editProductStock}
+                          onChange={(e) => setEditProductStock(e.target.value)}
+                        />
+                      </div>
+                    </div>
+
+                    {categories.length > 0 && (
+                      <div className="grid gap-1">
+                        <label className="text-sm font-medium text-zinc-900">Category (optional)</label>
+                        <select
+                          className="w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-400"
+                          value={editProductCategory}
+                          onChange={(e) => setEditProductCategory(e.target.value)}
+                        >
+                          <option value="">Keep current category</option>
+                          {categories.map((c) => (
+                            <option key={c._id} value={c.slug}>{c.name}</option>
+                          ))}
+                        </select>
+                      </div>
+                    )}
+
+                    <div className="grid gap-1">
+                      <label className="text-sm font-medium text-zinc-900">Description (optional)</label>
+                      <textarea
+                        className="w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-400"
+                        rows={3}
+                        placeholder="Product description..."
+                        value={editProductDescription}
+                        onChange={(e) => setEditProductDescription(e.target.value)}
+                      />
+                    </div>
+
+                    <label className="flex items-center gap-2 text-sm font-medium text-zinc-900 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={editProductFeatured}
+                        onChange={(e) => setEditProductFeatured(e.target.checked)}
+                        className="h-4 w-4 rounded border-zinc-300"
+                      />
+                      Featured (Home page pe dikhega)
+                    </label>
+
+                    {updateError ? (
+                      <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">{updateError}</div>
+                    ) : null}
+
+                    <div className="flex gap-2">
+                      <Button onClick={onUpdateProduct} disabled={updatingProduct} className="flex-1">
+                        {updatingProduct ? "Updating…" : "Update Product"}
+                      </Button>
+                      <Button variant="secondary" onClick={cancelEdit} disabled={updatingProduct}>
+                        Cancel
+                      </Button>
+                    </div>
+                  </div>
+                </CardBody>
+              </Card>
+            </div>
+          ) : null}
 
           {/* Banner management */}
           <div className="mt-8">

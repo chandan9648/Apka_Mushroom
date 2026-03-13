@@ -11,7 +11,7 @@ const footerLinks = {
     { label: "Home", href: "/" },
     { label: "Our Story", href: "/#our-story" },
     { label: "Blogs", href: "/#blogs" },
-    { label: "Recipes", href: "/#recipes" },
+    // { label: "Recipes", href: "/#recipes" },
   ],
 };
 

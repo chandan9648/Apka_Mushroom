@@ -4,7 +4,7 @@ const ProductSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
     slug: { type: String, required: true, unique: true, index: true },
-    category: { type: mongoose.Schema.Types.ObjectId, ref: "Category", required: true, index: true },
+    category: { type: mongoose.Schema.Types.ObjectId, ref: "Category", required: false, index: true },
     price: { type: Number, required: true },
     compareAtPrice: { type: Number },
     currency: { type: String, default: "INR" },

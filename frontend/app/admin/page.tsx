@@ -67,6 +67,11 @@ export default function AdminPage() {
   const [products, setProducts] = React.useState<ProductItem[]>([]);
   const [productsLoading, setProductsLoading] = React.useState(false);
 
+  // Category management
+  const [newCategoryName, setNewCategoryName] = React.useState("");
+  const [addingCategory, setAddingCategory] = React.useState(false);
+  const [categoryError, setCategoryError] = React.useState<string | null>(null);
+
   // Edit product state
   const [editingProductId, setEditingProductId] = React.useState<string | null>(null);
   const [editProductName, setEditProductName] = React.useState("");
@@ -229,13 +234,11 @@ export default function AdminPage() {
     if (!uploadUrl) { setProductError("Pehle image upload karein"); return; }
     if (!productName.trim()) { setProductError("Product name required hai"); return; }
     if (!productPrice || Number(productPrice) <= 0) { setProductError("Valid price daalein"); return; }
-    if (!productCategory) { setProductError("Category select karein"); return; }
 
     setCreatingProduct(true);
     try {
       const productData: any = {
         name: productName.trim(),
-        categorySlug: productCategory,
         price: Number(productPrice),
         images: [uploadUrl],
         description: productDescription,
@@ -349,6 +352,36 @@ export default function AdminPage() {
       setUpdateError(authErrorMessage(err));
     } finally {
       setUpdatingProduct(false);
+    }
+  };
+
+  const onCreateCategory = async () => {
+    setCategoryError(null);
+    if (!accessToken) { setCategoryError("Not authenticated"); return; }
+    if (!newCategoryName.trim() || newCategoryName.trim().length < 2) { setCategoryError("Category name must be at least 2 characters"); return; }
+    setAddingCategory(true);
+    try {
+      await apiFetchJson("/api/categories", {
+        method: "POST",
+        token: accessToken,
+        body: JSON.stringify({ name: newCategoryName.trim() }),
+      });
+      setNewCategoryName("");
+      void fetchCategories();
+    } catch (err) {
+      setCategoryError(authErrorMessage(err));
+    } finally {
+      setAddingCategory(false);
+    }
+  };
+
+  const onDeleteCategory = async (id: string) => {
+    if (!accessToken) return;
+    try {
+      await apiFetchJson(`/api/categories/${id}`, { method: "DELETE", token: accessToken });
+      void fetchCategories();
+    } catch {
+      /* ignore */
     }
   };
 
@@ -490,6 +523,23 @@ export default function AdminPage() {
                     </div>
                   ) : null}
 
+                  {/* Category — always visible so user can set it before uploading image */}
+                  {categories.length > 0 && (
+                    <div className="grid gap-1">
+                      <label className="text-sm font-medium text-zinc-900">Category *</label>
+                      <select
+                        className="w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-400"
+                        value={productCategory}
+                        onChange={(e) => setProductCategory(e.target.value)}
+                      >
+                        <option value="">-- Select Category --</option>
+                        {categories.map((c) => (
+                          <option key={c._id} value={c.slug}>{c.name}</option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
+
                   {/* Product details — shown after image uploaded */}
                   {uploadUrl ? (
                     <>
@@ -531,20 +581,6 @@ export default function AdminPage() {
                           value={productStock}
                           onChange={(e) => setProductStock(e.target.value)}
                         />
-                      </div>
-
-                      <div className="grid gap-1">
-                        <label className="text-sm font-medium text-zinc-900">Category *</label>
-                        <select
-                          className="w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-400"
-                          value={productCategory}
-                          onChange={(e) => setProductCategory(e.target.value)}
-                        >
-                          <option value="">-- Select Category --</option>
-                          {categories.map((c) => (
-                            <option key={c._id} value={c.slug}>{c.name}</option>
-                          ))}
-                        </select>
                       </div>
 
                       <div className="grid gap-1">
@@ -748,6 +784,52 @@ export default function AdminPage() {
               </Card>
             </div>
           ) : null}
+
+          {/* Category management */}
+          <div className="mt-8">
+            <div className="text-sm font-semibold text-zinc-900">Categories</div>
+            <div className="mt-1 text-xs text-zinc-500">Manage product categories. Categories appear in the product form above.</div>
+
+            <div className="mt-4 flex items-end gap-2">
+              <div className="grid gap-1 flex-1">
+                <label className="text-sm font-medium text-zinc-900">New Category Name</label>
+                <Input
+                  placeholder="e.g. Fresh Mushrooms"
+                  value={newCategoryName}
+                  onChange={(e) => setNewCategoryName(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === "Enter") void onCreateCategory(); }}
+                />
+              </div>
+              <Button onClick={onCreateCategory} disabled={addingCategory}>
+                {addingCategory ? "Adding…" : "Add Category"}
+              </Button>
+            </div>
+
+            {categoryError ? (
+              <div className="mt-2 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">{categoryError}</div>
+            ) : null}
+
+            {categories.length === 0 ? (
+              <div className="mt-4 rounded-xl border border-zinc-200 bg-white px-4 py-6 text-center text-sm text-zinc-500">
+                No categories yet. Add one above to start creating products.
+              </div>
+            ) : (
+              <div className="mt-4 flex flex-wrap gap-2">
+                {categories.map((c) => (
+                  <div key={c._id} className="flex items-center gap-1.5 rounded-full border border-zinc-200 bg-white px-3 py-1 text-sm text-zinc-800">
+                    <span>{c.name}</span>
+                    <button
+                      onClick={() => void onDeleteCategory(c._id)}
+                      className="ml-1 text-zinc-400 hover:text-red-500 transition-colors"
+                      title="Delete category"
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
 
           {/* Banner management */}
           <div className="mt-8">

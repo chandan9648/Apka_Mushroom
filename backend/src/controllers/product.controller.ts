@@ -7,7 +7,7 @@ import { slugify } from "../utils/slugify.js";
 
 export const UpsertProductSchema = z.object({
   name: z.string().min(2),
-  categorySlug: z.string().min(1),
+  categorySlug: z.string().min(1).optional(),
   price: z.number().positive(),
   compareAtPrice: z.number().positive().optional(),
   weight: z.number().positive().optional(),
@@ -90,8 +90,13 @@ export const getProductBySlug = asyncHandler(async (req, res) => {
 
 export const createProduct = asyncHandler(async (req, res) => {
   const body = UpsertProductSchema.parse(req.body);
-  const category = await CategoryModel.findOne({ slug: body.categorySlug });
-  if (!category) throw new ApiError(400, "Invalid category");
+
+  let categoryId: any = undefined;
+  if (body.categorySlug) {
+    const category = await CategoryModel.findOne({ slug: body.categorySlug });
+    if (!category) throw new ApiError(400, "Invalid category");
+    categoryId = category._id;
+  }
 
   const slug = slugify(body.name);
   const exists = await ProductModel.findOne({ slug });
@@ -100,7 +105,7 @@ export const createProduct = asyncHandler(async (req, res) => {
   const product = await ProductModel.create({
     name: body.name,
     slug,
-    category: category._id,
+    ...(categoryId ? { category: categoryId } : {}),
     price: body.price,
     compareAtPrice: body.compareAtPrice,
     weight: body.weight,

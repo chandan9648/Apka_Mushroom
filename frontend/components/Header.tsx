@@ -72,18 +72,18 @@ function IconUser() {
   );
 }
 
-function IconHeart() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path
-        d="M12 21s-7-4.35-9.5-8.6C.9 9.6 2.2 6.7 5.2 5.6c2-.7 4.1.1 5.3 1.7 1.2-1.6 3.3-2.4 5.3-1.7 3 1.1 4.3 4 2.7 6.8C19 16.65 12 21 12 21Z"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
+// function IconHeart() {
+//   return (
+//     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+//       <path
+//         d="M12 21s-7-4.35-9.5-8.6C.9 9.6 2.2 6.7 5.2 5.6c2-.7 4.1.1 5.3 1.7 1.2-1.6 3.3-2.4 5.3-1.7 3 1.1 4.3 4 2.7 6.8C19 16.65 12 21 12 21Z"
+//         stroke="currentColor"
+//         strokeWidth="2"
+//         strokeLinejoin="round"
+//       />
+//     </svg>
+//   );
+// }
 
 function IconCart() {
   return (
@@ -190,9 +190,9 @@ export function Header() {
               <IconBtn><IconUser /></IconBtn>
             </Link>
 
-            <Link href="/account" className="no-underline" aria-label="Favorites">
+            {/* <Link href="/account" className="no-underline" aria-label="Favorites">
               <IconBtn><IconHeart /></IconBtn>
-            </Link>
+            </Link> */}
 
             {user?.role !== "admin" ? (
               <Link href="/cart" className="no-underline relative" aria-label="Cart">

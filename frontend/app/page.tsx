@@ -78,8 +78,8 @@ export default async function HomePage() {
           {/* Hero content */}
           <div className="container-x absolute inset-0 flex items-center">
             <div className="max-w-lg px-2 sm:px-0">
-              <div className="inline-flex items-center gap-2 rounded-full bg-amber-400/20 border border-amber-400/40 px-3 py-1 text-xs font-medium text-amber-300 mb-5 backdrop-blur-sm">
-                <span className="h-1.5 w-1.5 rounded-full bg-amber-400 animate-pulse" />
+              <div className="inline-flex items-center gap-2 rounded-full bg-amber-400/20 border border-amber-400/40 px-3 py-1 text-xs font-medium text-amber-300 mb-10 backdrop-blur-sm">
+                <span className="h-1 w-1 rounded-full bg-amber-400 animate-pulse" />
                 100% Organic Mushrooms
               </div>
               <h1 className="text-4xl font-bold leading-tight tracking-tight text-white sm:text-5xl lg:text-6xl">

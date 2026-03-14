@@ -61,6 +61,8 @@ export default function AdminPage() {
   const [creatingProduct, setCreatingProduct] = React.useState(false);
   const [productError, setProductError] = React.useState<string | null>(null);
   const [productSuccess, setProductSuccess] = React.useState<string | null>(null);
+  const [productImageMode, setProductImageMode] = React.useState<"upload" | "link">("upload");
+  const [productImageLink, setProductImageLink] = React.useState("");
 
   // Categories & products list
   const [categories, setCategories] = React.useState<CategoryItem[]>([]);
@@ -84,6 +86,29 @@ export default function AdminPage() {
   const [editProductImage, setEditProductImage] = React.useState("");
   const [updatingProduct, setUpdatingProduct] = React.useState(false);
   const [updateError, setUpdateError] = React.useState<string | null>(null);
+
+  const normalizeImageInput = React.useCallback((value: string) => {
+    const trimmed = value.trim();
+    if (!trimmed) return "";
+    if (trimmed.startsWith("uploads/")) return `/${trimmed}`;
+    return trimmed;
+  }, []);
+
+  const isValidImageUrl = React.useCallback((value: string) => {
+    if (!value) return false;
+    if (value.startsWith("/uploads/")) return true;
+    try {
+      const parsed = new URL(value);
+      return parsed.protocol === "http:" || parsed.protocol === "https:";
+    } catch {
+      return false;
+    }
+  }, []);
+
+  const productImageUrl = React.useMemo(() => {
+    if (productImageMode === "upload") return uploadUrl ?? "";
+    return normalizeImageInput(productImageLink);
+  }, [productImageMode, productImageLink, uploadUrl, normalizeImageInput]);
 
   React.useEffect(() => {
     if (!ready) return;
@@ -231,7 +256,14 @@ export default function AdminPage() {
     setProductSuccess(null);
 
     if (!accessToken) { setProductError("Not authenticated"); return; }
-    if (!uploadUrl) { setProductError("Pehle image upload karein"); return; }
+    if (!productImageUrl) {
+      setProductError(productImageMode === "upload" ? "Pehle image upload karein" : "Product image link daalein");
+      return;
+    }
+    if (!isValidImageUrl(productImageUrl)) {
+      setProductError("Valid image URL daalein (http/https ya /uploads/...) ");
+      return;
+    }
     if (!productName.trim()) { setProductError("Product name required hai"); return; }
     if (!productPrice || Number(productPrice) <= 0) { setProductError("Valid price daalein"); return; }
 
@@ -240,11 +272,15 @@ export default function AdminPage() {
       const productData: any = {
         name: productName.trim(),
         price: Number(productPrice),
-        images: [uploadUrl],
+        images: [productImageUrl],
         description: productDescription,
         stock: Number(productStock) || 0,
         isFeatured: productFeatured,
       };
+
+      if (productCategory) {
+        productData.categorySlug = productCategory;
+      }
 
       if (productWeight) {
         productData.weight = Number(productWeight);
@@ -264,6 +300,8 @@ export default function AdminPage() {
       setProductDescription("");
       setProductFeatured(true);
       setUploadUrl(null);
+      setProductImageLink("");
+      setProductImageMode("upload");
       setFile(null);
       void fetchProducts();
     } catch (err) {
@@ -476,46 +514,90 @@ export default function AdminPage() {
             <Card className="lg:col-span-1">
               <CardHeader>
                 <div className="text-sm font-semibold text-zinc-900">Add New Product</div>
-                <div className="mt-1 text-xs text-zinc-500">Upload image &amp; fill product details</div>
+                <div className="mt-1 text-xs text-zinc-500">Image upload ya image link ke saath product add karein</div>
               </CardHeader>
               <CardBody>
                 <div className="grid gap-3">
-                  {/* Image upload */}
                   <div className="grid gap-1">
-                    <label htmlFor="admin-upload" className="text-sm font-medium text-zinc-900">
-                      Product Image
-                    </label>
-                    <Input
-                      id="admin-upload"
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-                    />
-                    <div className="text-xs text-zinc-500">
-                      {file ? (
-                        <span>Selected: <span className="font-medium text-zinc-900">{file.name}</span></span>
-                      ) : (
-                        <span>No file selected</span>
-                      )}
+                    <div className="text-sm font-medium text-zinc-900">Product Image Source</div>
+                    <div className="flex items-center gap-4 text-sm text-zinc-700">
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="radio"
+                          name="product-image-mode"
+                          value="upload"
+                          checked={productImageMode === "upload"}
+                          onChange={() => setProductImageMode("upload")}
+                          className="h-4 w-4 border-zinc-300"
+                        />
+                        Upload image
+                      </label>
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="radio"
+                          name="product-image-mode"
+                          value="link"
+                          checked={productImageMode === "link"}
+                          onChange={() => setProductImageMode("link")}
+                          className="h-4 w-4 border-zinc-300"
+                        />
+                        Use image link
+                      </label>
                     </div>
                   </div>
 
-                  {!uploadUrl ? (
-                    <div className="flex items-center gap-2">
-                      <Button onClick={onUpload} disabled={!file || uploading}>
-                        {uploading ? "Uploading…" : "Upload Image"}
-                      </Button>
-                      {uploading ? <div className="text-xs text-zinc-500">Please wait…</div> : null}
-                    </div>
+                  {productImageMode === "upload" ? (
+                    <>
+                      <div className="grid gap-1">
+                        <label htmlFor="admin-upload" className="text-sm font-medium text-zinc-900">
+                          Upload Product Image
+                        </label>
+                        <Input
+                          id="admin-upload"
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+                        />
+                        <div className="text-xs text-zinc-500">
+                          {file ? (
+                            <span>Selected: <span className="font-medium text-zinc-900">{file.name}</span></span>
+                          ) : (
+                            <span>No file selected</span>
+                          )}
+                        </div>
+                      </div>
+
+                      {!uploadUrl ? (
+                        <div className="flex items-center gap-2">
+                          <Button onClick={onUpload} disabled={!file || uploading}>
+                            {uploading ? "Uploading…" : "Upload Image"}
+                          </Button>
+                          {uploading ? <div className="text-xs text-zinc-500">Please wait…</div> : null}
+                        </div>
+                      ) : null}
+                    </>
                   ) : (
+                    <div className="grid gap-1">
+                      <label className="text-sm font-medium text-zinc-900">Image URL</label>
+                      <Input
+                        type="url"
+                        placeholder="https://example.com/product.jpg"
+                        value={productImageLink}
+                        onChange={(e) => setProductImageLink(e.target.value)}
+                      />
+                      <div className="text-xs text-zinc-500">http/https URL ya /uploads/... path de sakte hain</div>
+                    </div>
+                  )}
+
+                  {productImageUrl ? (
                     <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-2">
                       <img
-                        src={uploadUrl}
-                        alt="Uploaded"
+                        src={productImageUrl}
+                        alt="Product preview"
                         className="w-full rounded-lg border border-zinc-200 aspect-[4/3] object-cover"
                       />
                     </div>
-                  )}
+                  ) : null}
 
                   {uploadError ? (
                     <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700" role="alert">
@@ -540,8 +622,8 @@ export default function AdminPage() {
                     </div>
                   )}
 
-                  {/* Product details — shown after image uploaded */}
-                  {uploadUrl ? (
+                  {/* Product details — shown after image is selected via upload or link */}
+                  {productImageUrl ? (
                     <>
                       <div className="grid gap-1">
                         <label className="text-sm font-medium text-zinc-900">Product Name *</label>

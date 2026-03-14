@@ -11,6 +11,7 @@ const OrderItemSchema = new mongoose.Schema(
   { _id: false }
 );
 
+//address schema
 const AddressSchema = new mongoose.Schema(
   {
     fullName: { type: String, required: true },

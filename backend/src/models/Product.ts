@@ -1,5 +1,6 @@
 import mongoose, { type InferSchemaType } from "mongoose";
 
+//product schema
 const ProductSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },

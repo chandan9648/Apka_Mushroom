@@ -263,7 +263,7 @@ export function Header() {
                     <button
                       type="button"
                       onClick={() => { logout(); setMobileOpen(false); }}
-                      className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2.5 text-left text-sm font-medium text-zinc-900 hover:bg-zinc-50 transition-colors"
+                      className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2.5 text-left text-sm font-medium text-zinc-900 hover:bg-zinc-50 transition-colors cursor-pointer"
                     >
                       Log out
                     </button>
@@ -271,7 +271,7 @@ export function Header() {
                     <Link
                       href="/auth/login"
                       onClick={() => setMobileOpen(false)}
-                      className="block rounded-lg bg-zinc-900 px-4 py-2.5 text-sm font-medium text-white no-underline text-center"
+                      className="block rounded-lg bg-zinc-900 px-4 py-2.5 text-sm font-medium text-white no-underline text-center cursor-pointer"
                     >
                       Log in
                     </Link>

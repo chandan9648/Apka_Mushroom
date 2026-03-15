@@ -8,6 +8,7 @@ import { Card, CardBody, CardHeader } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 
+// Types
 type AdminStats = { users: number; products: number; orders: number };
 type Banner = { _id: string; imageUrl: string; title: string; isActive: boolean; order: number };
 type CategoryItem = { _id: string; name: string; slug: string };
@@ -198,7 +199,7 @@ export default function AdminPage() {
     } catch {
       /* ignore */
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+ 
   }, []);
 
   const fetchProducts = React.useCallback(async () => {

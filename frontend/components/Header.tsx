@@ -24,11 +24,10 @@ function NavLink({
     <Link
       href={href}
       onClick={onClick}
-      className={`relative text-sm font-medium transition-colors no-underline after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:rounded-full after:bg-amber-500 after:transition-all after:duration-300 hover:after:w-full ${
-        active
-          ? "text-zinc-900 after:w-full after:bg-amber-500"
-          : "text-zinc-600 hover:text-zinc-900"
-      } ${className ?? ""}`}
+      className={`relative text-sm font-medium transition-colors no-underline after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:rounded-full after:bg-amber-500 after:transition-all after:duration-300 hover:after:w-full ${active
+        ? "text-zinc-900 after:w-full after:bg-amber-500"
+        : "text-zinc-600 hover:text-zinc-900"
+        } ${className ?? ""}`}
     >
       {children}
     </Link>
@@ -167,16 +166,15 @@ export function Header() {
                 href="/products"
                 className="relative text-sm font-medium text-zinc-600 hover:text-zinc-900 no-underline inline-flex items-center gap-1 transition-colors after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:rounded-full after:bg-amber-500 after:transition-all after:duration-300 hover:after:w-full"
               >
-                Shop
+                Products
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                   <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </Link>
             ) : null}
-            <NavLink href="/#our-story">Our Story</NavLink>
-            <NavLink href="/#blogs">Blogs</NavLink>
-            <NavLink href="/#media">Media</NavLink>
+            <NavLink href="/#">Contact</NavLink>
             <NavLink href="/#recipes">Recipes</NavLink>
+            <NavLink href="/#about">Abouts</NavLink>
             {user?.role === "admin" ? <NavLink href="/admin">Admin</NavLink> : null}
           </nav>
 
@@ -242,11 +240,12 @@ export function Header() {
               <nav className="flex flex-col gap-1">
                 {[
                   { href: "/", label: "Home" },
-                  ...(user?.role !== "admin" ? [{ href: "/products", label: "Shop" }] : []),
-                  { href: "/#our-story", label: "Our Story" },
-                  { href: "/#blogs", label: "Blogs" },
-                  { href: "/#media", label: "Media" },
+                  ...(user?.role !== "admin" ? [{ href: "/products", label: "Products" }] : []),
+
+                  { href: "/#contact", label: "Contact" },
                   { href: "/#recipes", label: "Recipes" },
+                  { href: "/#media", label: "Abouts" },
+
                   ...(user?.role === "admin" ? [{ href: "/admin", label: "Admin" }] : []),
                 ].map((l) => (
                   <Link

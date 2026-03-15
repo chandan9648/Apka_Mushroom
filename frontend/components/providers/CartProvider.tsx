@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import type { Product } from "@/lib/types";
+import { useAuth } from "@/components/providers/AuthProvider";
 
 export type CartItem = {
   productId: string;
@@ -24,12 +25,16 @@ type CartContextValue = {
 
 const CartContext = React.createContext<CartContextValue | null>(null);
 
-const LS_KEY = "ApkaMushroom_cart_v1";
+const LS_KEY_PREFIX = "ApkaMushroom_cart_v1";
 
-function loadCart(): CartItem[] {
+function getUserCartKey(userId: string) {
+  return `${LS_KEY_PREFIX}_${userId}`;
+}
+
+function loadCart(userId: string): CartItem[] {
   if (typeof window === "undefined") return [];
   try {
-    const raw = window.localStorage.getItem(LS_KEY);
+    const raw = window.localStorage.getItem(getUserCartKey(userId));
     if (!raw) return [];
     const parsed = JSON.parse(raw) as CartItem[];
     if (!Array.isArray(parsed)) return [];
@@ -39,21 +44,33 @@ function loadCart(): CartItem[] {
   }
 }
 
-function saveCart(items: CartItem[]) {
+function saveCart(userId: string, items: CartItem[]) {
   if (typeof window === "undefined") return;
-  window.localStorage.setItem(LS_KEY, JSON.stringify(items));
+  window.localStorage.setItem(getUserCartKey(userId), JSON.stringify(items));
+}
+
+function clearCart(userId: string) {
+  if (typeof window === "undefined") return;
+  window.localStorage.removeItem(getUserCartKey(userId));
 }
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
+  const { user, ready } = useAuth();
   const [items, setItems] = React.useState<CartItem[]>([]);
 
   React.useEffect(() => {
-    setItems(loadCart());
-  }, []);
+    if (!ready) return;
+    if (!user) {
+      setItems([]);
+      return;
+    }
+    setItems(loadCart(user.id));
+  }, [ready, user]);
 
   React.useEffect(() => {
-    saveCart(items);
-  }, [items]);
+    if (!ready || !user) return;
+    saveCart(user.id, items);
+  }, [items, ready, user]);
 
   const add = React.useCallback((product: Product, quantity: number = 1) => {
     setItems((prev) => {
@@ -89,8 +106,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const clear = React.useCallback(() => {
     setItems([]);
-    if (typeof window !== "undefined") window.localStorage.removeItem(LS_KEY);
-  }, []);
+    if (user) clearCart(user.id);
+  }, [user]);
 
   const count = items.reduce((sum, x) => sum + x.quantity, 0);
   const subtotal = items.reduce((sum, x) => sum + x.price * x.quantity, 0);

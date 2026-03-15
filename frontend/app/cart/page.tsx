@@ -3,6 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { useCart } from "@/components/providers/CartProvider";
+import { useAuth } from "@/components/providers/AuthProvider";
 import { apiFetchJson } from "@/lib/api";
 import { formatMoney } from "@/lib/money";
 import { Button } from "@/components/ui/Button";
@@ -10,6 +11,7 @@ import { Input } from "@/components/ui/Input";
 import { Card, CardBody, CardHeader } from "@/components/ui/Card";
 
 export default function CartPage() {
+  const { user, ready } = useAuth();
   const { items, subtotal, setQuantity, remove, clear } = useCart();
   const currency = items[0]?.currency ?? "INR";
 
@@ -20,6 +22,33 @@ export default function CartPage() {
   const [couponApplied, setCouponApplied] = React.useState(false);
 
   const total = Math.max(0, subtotal - discount);
+
+  if (!ready) {
+    return (
+      <div className="container-x py-12">
+        <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-10 text-center text-sm text-zinc-500">
+          Loading cart...
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="container-x py-12">
+        <div className="flex flex-col items-center justify-center rounded-2xl border border-zinc-200 bg-zinc-50 py-20 text-center">
+          <h1 className="text-2xl font-bold text-zinc-900">Login required</h1>
+          <p className="mt-2 text-sm text-zinc-500">Please login to view products in your cart.</p>
+          <Link
+            href="/auth/login?next=%2Fcart"
+            className="mt-6 inline-flex items-center gap-2 rounded-full bg-zinc-900 px-6 py-2.5 text-sm font-semibold text-white no-underline hover:bg-zinc-700 transition-colors"
+          >
+            Go to login
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   const applyCoupon = async () => {
     setLoadingCoupon(true);

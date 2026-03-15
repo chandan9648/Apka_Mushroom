@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { useCart } from "@/components/providers/CartProvider";
 import { useAuth } from "@/components/providers/AuthProvider";
@@ -10,6 +11,17 @@ export function AddToCartButton({ product }: { product: Product }) {
   const { add } = useCart();
 
   if (user?.role === "admin") return null;
+
+  if (!user) {
+    return (
+      <Link
+        href={`/auth/login?next=${encodeURIComponent(`/products/${product.slug}`)}`}
+        className="inline-flex items-center justify-center gap-2 rounded-xl bg-zinc-900 px-6 py-2.5 text-sm font-semibold text-white no-underline hover:bg-zinc-700 transition-colors"
+      >
+        Login to add to cart
+      </Link>
+    );
+  }
 
   const inStock = product.stock > 0;
 

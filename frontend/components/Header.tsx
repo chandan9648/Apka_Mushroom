@@ -218,14 +218,14 @@ export function Header() {
               <button
                 type="button"
                 onClick={logout}
-                className="ml-2 hidden md:inline-flex rounded-full border border-zinc-300 bg-white px-4 py-2 text-sm font-medium text-zinc-900 hover:bg-zinc-50 hover:border-zinc-400 transition-colors"
+                className="ml-2 hidden md:inline-flex rounded-full border border-zinc-300 bg-white px-4 py-2 text-sm font-medium text-zinc-900 hover:bg-zinc-50 hover:border-zinc-400 transition-colors cursor-pointer"
               >
                 Log out
               </button>
             ) : (
               <Link
                 href="/auth/login"
-                className="ml-2 hidden md:inline-flex no-underline rounded-full bg-zinc-900 px-5 py-2 text-sm font-medium text-white hover:bg-zinc-700 transition-colors"
+                className="ml-2 hidden md:inline-flex no-underline rounded-full bg-zinc-900 px-5 py-2 text-sm font-medium text-white hover:bg-zinc-700 transition-colors cursor-pointer"
               >
                 Log in
               </Link>

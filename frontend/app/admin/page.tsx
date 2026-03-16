@@ -515,7 +515,7 @@ export default function AdminPage() {
             <Card className="lg:col-span-1">
               <CardHeader>
                 <div className="text-sm font-semibold text-zinc-900">Add New Product</div>
-                <div className="mt-1 text-xs text-zinc-500">Image upload ya image link ke saath product add karein</div>
+                <div className="mt-1 text-xs text-zinc-500">Add product with image upload or image link</div>
               </CardHeader>
               <CardBody>
                 <div className="grid gap-3">
@@ -586,7 +586,7 @@ export default function AdminPage() {
                         value={productImageLink}
                         onChange={(e) => setProductImageLink(e.target.value)}
                       />
-                      <div className="text-xs text-zinc-500">http/https URL ya /uploads/... path de sakte hain</div>
+                      <div className="text-xs text-zinc-500">You can provide an http/https URL or /upload/... path</div>
                     </div>
                   )}
 

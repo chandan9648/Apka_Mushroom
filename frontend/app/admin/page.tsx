@@ -441,8 +441,8 @@ export default function AdminPage() {
               )}
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <Button variant="secondary" onClick={logout}>
+          <div className="flex items-center gap-2 cursor-pointer">
+            <Button variant="secondary" onClick={logout} >
               Log out
             </Button>
           </div>

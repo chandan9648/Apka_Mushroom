@@ -14,8 +14,7 @@ const emailSchema = z.string().email().transform((v) => v.toLowerCase());
 export const SignupSchema = z.object({
   name: z.string().min(2),
   email: emailSchema,
-  password: z.string().min(8),
-  role: z.enum(["user", "admin"])
+  password: z.string().min(8)
 });
 
 export const LoginSchema = z.object({
@@ -80,7 +79,7 @@ export const signup = asyncHandler(async (req, res) => {
     name: body.name,
     email: body.email,
     passwordHash: await hashPassword(body.password),
-    role: body.role,
+    role: "user",
     isEmailVerified: false
   });
 

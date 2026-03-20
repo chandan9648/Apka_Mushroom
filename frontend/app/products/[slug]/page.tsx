@@ -8,7 +8,7 @@ import { ProductCard } from "@/components/ProductCard";
 import { ReviewForm } from "@/components/ReviewForm";
 
 type Props = {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 };
 
 type Review = {
@@ -43,7 +43,8 @@ function StarRating({ rating }: { rating: number }) {
 }
 
 export default async function ProductPage({ params }: Props) {
-  const { product } = await apiFetchJson<{ product: Product }>(`/api/products/${encodeURIComponent(params.slug)}`,
+  const { slug } = await params;
+  const { product } = await apiFetchJson<{ product: Product }>(`/api/products/${encodeURIComponent(slug)}`,
   {
     cache: "no-store",
   });

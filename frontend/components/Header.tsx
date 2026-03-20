@@ -173,7 +173,7 @@ export function Header() {
               </Link>
             ) : null}
             <NavLink href="/#">Contact</NavLink>
-            <NavLink href="/#recipes">Recipes</NavLink>
+            {/* <NavLink href="/#contact">Contact</NavLink> */}
             <NavLink href="/#about">Abouts</NavLink>
             {user?.role === "admin" ? <NavLink href="/admin">Admin</NavLink> : null}
           </nav>

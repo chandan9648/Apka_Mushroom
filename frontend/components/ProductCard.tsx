@@ -79,16 +79,25 @@ export function ProductCard({ product }: { product: Product }) {
             {inStock ? `${product.stock} in stock` : "Out of stock"}
           </div>
           {!isAdmin ? (
-            <Button
-              onClick={() => add(product, 1)}
-              disabled={!inStock}
-              className="text-xs px-3 py-1.5 rounded-lg gap-1.5"
-            >
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M6 7h15l-2 10H7L6 7Zm0 0-.8-3H2M9 21a1 1 0 1 0 0-2 1 1 0 0 0 0 2Zm8 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" />
-              </svg>
-              Add
-            </Button>
+            !user ? (
+              <Link
+                href={`/auth/login?next=${encodeURIComponent(`/products/${product.slug}`)}`}
+                className="text-xs px-3 py-1.5 rounded-lg bg-zinc-900 text-white no-underline hover:bg-zinc-700 transition-colors font-medium"
+              >
+                Add 
+              </Link>
+            ) : (
+              <Button
+                onClick={() => add(product, 1)}
+                disabled={!inStock}
+                className="text-xs px-3 py-1.5 rounded-lg gap-1.5"
+              >
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M6 7h15l-2 10H7L6 7Zm0 0-.8-3H2M9 21a1 1 0 1 0 0-2 1 1 0 0 0 0 2Zm8 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" />
+                </svg>
+                Add
+              </Button>
+            )
           ) : null}
         </div>
       </div>

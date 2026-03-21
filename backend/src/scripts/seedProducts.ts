@@ -18,7 +18,6 @@
 //     // Get or create categories
 //     const categories = await CategoryModel.find({});
 //     let mushroom = categories.find((c) => c.slug === "mushroom");
-//     let supplement = categories.find((c) => c.slug === "supplement");
 
 //     if (!mushroom) {
 //       mushroom = await CategoryModel.create({
@@ -27,15 +26,6 @@
 //         description: "Premium quality mushrooms"
 //       });
 //       console.log("✓ Created Mushroom category");
-//     }
-
-//     if (!supplement) {
-//       supplement = await CategoryModel.create({
-//         name: "Supplement",
-//         slug: "supplement",
-//         description: "Health supplements"
-//       });
-//       console.log("✓ Created Supplement category");
 //     }
 
 //     // Create test products
@@ -70,27 +60,6 @@
 //         benefits: ["Rich in protein", "Low calorie", "Versatile"],
 //         tags: ["mushroom", "cooking"],
 //         stock: 150,
-//         isFeatured: true,
-//         isActive: true
-//       },
-//       {
-//         name: "Reishi Mushroom Extract",
-//         category: supplement._id,
-//         price: 899,
-//         weight: 100,
-//         weightUnit: "g",
-//         images: [
-//           "https://images.unsplash.com/photo-1625246333195-78d9c38ad576?w=400"
-//         ],
-//         description: "Premium reishi extract for wellness",
-//         benefits: [
-//           "Stress relief",
-//           "Better sleep",
-//           "Immune boost",
-//           "Energy support"
-//         ],
-//         tags: ["supplement", "wellness", "premium"],
-//         stock: 50,
 //         isFeatured: true,
 //         isActive: true
 //       },

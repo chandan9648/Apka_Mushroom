@@ -71,18 +71,6 @@ function IconUser() {
   );
 }
 
-// function IconHeart() {
-//   return (
-//     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-//       <path
-//         d="M12 21s-7-4.35-9.5-8.6C.9 9.6 2.2 6.7 5.2 5.6c2-.7 4.1.1 5.3 1.7 1.2-1.6 3.3-2.4 5.3-1.7 3 1.1 4.3 4 2.7 6.8C19 16.65 12 21 12 21Z"
-//         stroke="currentColor"
-//         strokeWidth="2"
-//         strokeLinejoin="round"
-//       />
-//     </svg>
-//   );
-// }
 
 function IconCart() {
   return (
@@ -173,7 +161,7 @@ export function Header() {
               </Link>
             ) : null}
             <NavLink href="/#">Contact</NavLink>
-            {/* <NavLink href="/#contact">Contact</NavLink> */}
+  
             <NavLink href="/#about">Abouts</NavLink>
             {user?.role === "admin" ? <NavLink href="/admin">Admin</NavLink> : null}
           </nav>
@@ -188,9 +176,6 @@ export function Header() {
               <IconBtn><IconUser /></IconBtn>
             </Link>
 
-            {/* <Link href="/account" className="no-underline" aria-label="Favorites">
-              <IconBtn><IconHeart /></IconBtn>
-            </Link> */}
 
             {user?.role !== "admin" ? (
               <Link href="/cart" className="no-underline relative" aria-label="Cart">
@@ -252,7 +237,7 @@ export function Header() {
                     key={l.href}
                     href={l.href}
                     onClick={() => setMobileOpen(false)}
-                    className="block rounded-lg px-3 py-2.5 text-sm font-medium text-zinc-700 hover:bg-amber-100 hover:text-zinc-900 no-underline transition-colors"
+                    className="block rounded-lg px-3 py-2.5 text-sm font-medium text-zinc-700 hover:bg-amber-100 hover:text-zinc-900 no-underline transition-colors "
                   >
                     {l.label}
                   </Link>
@@ -263,7 +248,7 @@ export function Header() {
                     <button
                       type="button"
                       onClick={() => { logout(); setMobileOpen(false); }}
-                      className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2.5 text-left text-sm font-medium text-zinc-900 hover:bg-zinc-50 transition-colors cursor-pointer"
+                      className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2.5 text-left text-sm font-medium text-zinc-900 hover:bg-zinc-50 transition-colors cursor-pointer hover:bg-zinc-400"
                     >
                       Log out
                     </button>

@@ -228,7 +228,7 @@ export function Header() {
                   ...(user?.role !== "admin" ? [{ href: "/products", label: "Products" }] : []),
 
                   { href: "/#contact", label: "Contact" },
-                  { href: "/#recipes", label: "Recipes" },
+                  // { href: "/#recipes", label: "Recipes" },
                   { href: "/#media", label: "Abouts" },
 
                   ...(user?.role === "admin" ? [{ href: "/admin", label: "Admin" }] : []),

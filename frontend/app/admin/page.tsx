@@ -684,7 +684,7 @@ export default function AdminPage() {
                           onChange={(e) => setProductFeatured(e.target.checked)}
                           className="h-4 w-4 rounded border-zinc-300"
                         />
-                        Featured (Home page pe dikhega)
+                        Featured
                       </label>
 
                       {productError ? (

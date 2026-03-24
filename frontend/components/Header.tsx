@@ -44,7 +44,7 @@ function IconBtn({ children, label }: { children: ReactNode; label?: string }) {
     </span>
   );
 }
-
+//search icon
 function IconSearch() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -58,6 +58,7 @@ function IconSearch() {
   );
 }
 
+//user icon
 function IconUser() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -71,6 +72,8 @@ function IconUser() {
   );
 }
 
+
+//cart icon
 
 function IconCart() {
   return (
@@ -86,6 +89,9 @@ function IconCart() {
   );
 }
 
+
+//menu icon
+
 function IconMenu() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -94,6 +100,7 @@ function IconMenu() {
   );
 }
 
+//close icon
 function IconClose() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">

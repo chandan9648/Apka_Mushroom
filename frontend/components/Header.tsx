@@ -74,7 +74,6 @@ function IconUser() {
 
 
 //cart icon
-
 function IconCart() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -131,7 +130,7 @@ export function Header() {
       <div className="bg-zinc-900 text-white">
         <div className="container-x py-2 text-center text-xs font-medium tracking-wide">
           <span className="text-amber-400">✦</span>
-          {" "}Free shipping on orders above ₹499 · 100% Organic &amp; Lab Tested{" "}
+          {" "}Enjoy · 100% Organic &amp; Lab Tested Mushroom{" "}
           <span className="text-amber-400">✦</span>
         </div>
       </div>
@@ -142,12 +141,17 @@ export function Header() {
           {/* Logo */}
           <Link href="/" className="no-underline shrink-0">
             <div className="flex items-center gap-3">
-              <div className="grid h-11 w-11 place-items-center rounded-full bg-amber-400 text-zinc-900 text-sm font-bold shadow-sm">
-                AM
-              </div>
+              {/* <div className="grid h-11 w-11 place-items-center rounded-full bg-amber-400 text-zinc-900 text-sm font-bold shadow-sm">
+                RB
+              </div> */}
               <div className="leading-tight">
-                <div className="text-sm font-bold tracking-tight text-zinc-900">Apka Mushroom</div>
-                <div className="text-xs text-zinc-500">kingdom of health</div>
+                {/* <div className="text-sm font-bold tracking-tight text-zinc-900">RB Organic Mushroom</div>
+                <div className="text-xs text-zinc-500">kingdom of health</div> */}
+                <div>
+                  <Link href="/" className="text-lg font-bold tracking-tight text-zinc-900 ">
+                    <img src="/logoimg.jpg" alt="RB Organic Mushroom" width={110} height={100} className="rounded-full" />
+                  </Link>
+                </div>
               </div>
             </div>
           </Link>

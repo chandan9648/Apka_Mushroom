@@ -149,7 +149,7 @@ export function Header() {
                 <div className="text-xs text-zinc-500">kingdom of health</div> */}
                 <div>
                   <Link href="/" className="text-lg font-bold tracking-tight text-zinc-900 ">
-                    <img src="/logoimg.jpg" alt="RB Organic Mushroom" width={110} height={100} className="rounded-full" />
+                    <img src="/logoimg.jpg" alt="RB Organic Mushroom" width={110} height={100} className="rounded-full hover:scale-105 transition-transform duration-300" />
                   </Link>
                 </div>
               </div>

@@ -83,9 +83,9 @@ export default async function HomePage() {
                 100% Organic Mushrooms
               </div>
               <h1 className="text-4xl font-bold leading-tight tracking-tight text-white sm:text-5xl lg:text-6xl">
-                Embrace the{" "}
-                <span className="text-amber-400">Superfood</span>{" "}
-                Revolution
+                Fuel Your{" "}
+                <span className="text-amber-400">Life With Organic</span>{" "}
+                Goodness
               </h1>
               <p className="mt-4 text-base text-zinc-300 sm:text-lg max-w-sm">
                 Harness the Power of Nature&apos;s Finest Fungi — premium quality direct to your door.

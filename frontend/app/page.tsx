@@ -4,7 +4,7 @@ import { apiFetchJson } from "@/lib/api";
 import type { Category, Product, Banner } from "@/lib/types";
 import { ProductCard } from "@/components/ProductCard";
 import { HeroCarousel } from "@/components/HeroCarousel";
-import mush from "../public/apk_mushroom_nologo.png";
+import mush from "../public/oystermush.png";
 
 const trustFeatures = [
   {

@@ -29,7 +29,7 @@ export function Footer() {
                 AM
               </div>
               <div className="leading-tight">
-                <div className="text-sm font-semibold text-white">Apka Mushroom</div>
+                <div className="text-sm font-semibold text-white">RB Organic Mushroom</div>
                 <div className="text-xs text-zinc-500">kingdom of health</div>
               </div>
             </Link>

@@ -124,7 +124,7 @@ export function Footer() {
         {/* Divider & bottom bar */}
         <div className="mt-12 border-t border-zinc-800 pt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="text-xs text-zinc-600">
-            © {new Date().getFullYear()} ApkaMushroom. All rights reserved.
+            © {new Date().getFullYear()} RBorganicMushroom. All rights reserved.
           </div>
           <div className="flex flex-wrap gap-x-5 gap-y-1 text-xs">
             {[

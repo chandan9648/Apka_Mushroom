@@ -88,7 +88,6 @@ function IconCart() {
   );
 }
 
-
 //menu icon
 function IconMenu() {
   return (

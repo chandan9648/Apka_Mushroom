@@ -20,6 +20,7 @@ export const ApplyCouponSchema = z.object({
   subtotal: z.number().nonnegative()
 });
 
+//apply coupon
 export const applyCoupon = asyncHandler(async (req, res) => {
   const body = ApplyCouponSchema.parse(req.body);
   const { coupon, discount } = await computeDiscount(body.code, body.subtotal);
@@ -27,11 +28,13 @@ export const applyCoupon = asyncHandler(async (req, res) => {
   res.json({ discount, coupon: { code: coupon.code, type: coupon.type, value: coupon.value } });
 });
 
+//list coupons  
 export const listCoupons = asyncHandler(async (req, res) => {
   const items = await CouponModel.find().sort({ createdAt: -1 });
   res.json({ items });
 });
 
+//create coupon
 export const createCoupon = asyncHandler(async (req, res) => {
   const body = UpsertCouponSchema.parse(req.body);
   const exists = await CouponModel.findOne({ code: body.code });
@@ -47,6 +50,7 @@ export const createCoupon = asyncHandler(async (req, res) => {
   res.status(201).json({ coupon });
 });
 
+//update coupon
 export const updateCoupon = asyncHandler(async (req, res) => {
   const id = req.params.id;
   const body = UpsertCouponSchema.partial().parse(req.body);
@@ -67,6 +71,7 @@ export const updateCoupon = asyncHandler(async (req, res) => {
   res.json({ coupon });
 });
 
+//delete coupon
 export const deleteCoupon = asyncHandler(async (req, res) => {
   const id = req.params.id;
   const coupon = await CouponModel.findByIdAndDelete(id);

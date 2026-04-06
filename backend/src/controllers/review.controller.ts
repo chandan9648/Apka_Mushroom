@@ -11,6 +11,7 @@ export const CreateReviewSchema = z.object({
   comment: z.string().optional()
 });
 
+//list reviews
 export const listReviews = asyncHandler(async (req, res) => {
   const productId = typeof req.query.productId === "string" ? req.query.productId : undefined;
   const filter: any = {};

@@ -21,6 +21,7 @@ export const listReviews = asyncHandler(async (req, res) => {
   res.json({ items });
 });
 
+//createor update review
 export const createOrUpdateReview = asyncHandler(async (req, res) => {
   if (!req.auth) throw new ApiError(401, "Unauthorized");
   const body = CreateReviewSchema.parse(req.body);

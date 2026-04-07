@@ -803,7 +803,7 @@ export default function AdminPage() {
                       </div>
                     </div>
 
-                    <div className="grid gap-1">
+                    {/* <div className="grid gap-1">
                       <label className="text-sm font-medium text-zinc-900">Stock</label>
                       <Input
                         type="number"
@@ -811,7 +811,7 @@ export default function AdminPage() {
                         value={editProductStock}
                         onChange={(e) => setEditProductStock(e.target.value)}
                       />
-                    </div>
+                    </div> */}
 
                     {categories.length > 0 && (
                       <div className="grid gap-1">

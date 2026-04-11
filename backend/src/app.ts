@@ -32,6 +32,7 @@ export function createApp() {
   app.use(cookieParser());
   app.use(express.json({ limit: "2mb" }));
   app.use(express.urlencoded({ extended: true }));
+
 //cors config
   app.use(
     cors({
@@ -40,6 +41,7 @@ export function createApp() {
     })
   );
 
+  //rate limiter
   app.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"));
   app.use(
     rateLimit({
@@ -53,6 +55,8 @@ export function createApp() {
   app.get("/api/health", (req, res) => {
     res.json({ ok: true, name: "Apka Mushroom-api" });
   });
+
+  //all apis
 
   app.use("/api/auth", authRouter);
   app.use("/api/categories", categoryRouter);

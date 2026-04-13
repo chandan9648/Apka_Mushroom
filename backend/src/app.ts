@@ -57,7 +57,6 @@ export function createApp() {
   });
 
   //all apis
-
   app.use("/api/auth", authRouter);
   app.use("/api/categories", categoryRouter);
   app.use("/api/products", productRouter);

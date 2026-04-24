@@ -3,15 +3,13 @@ import Link from "next/link";
 const footerLinks = {
   shop: [
     { label: "All Products", href: "/products" },
-    { label: "Cart", href: "/cart" },
-    { label: "Checkout", href: "/checkout" },
+    { label: "Favorites", href: "/favorites" },
     { label: "My Account", href: "/account" },
   ],
   company: [
     { label: "Home", href: "/" },
-    { label: "Contacts", href: "/#contacts" },
-    { label: "About Us", href: "/#about-us" },
-
+    { label: "Contact Us", href: "/contact" },
+    { label: "About Us", href: "/about" },
     // { label: "Recipes", href: "/#recipes" },
   ],
 };
@@ -108,9 +106,7 @@ export function Footer() {
               {[
                 "100% Organic & Natural",
                 "Lab Tested & Certified",
-                "Free Shipping Above ₹499",
                 "Premium Quality Guarantee",
-                "Fast & Reliable Delivery",
               ].map((item) => (
                 <li key={item} className="flex items-start gap-2 text-zinc-500">
                   <span className="mt-0.5 shrink-0 text-amber-400">✓</span>
@@ -130,8 +126,6 @@ export function Footer() {
             {[
               { label: "Privacy Policy", href: "#" },
               { label: "Terms of Service", href: "#" },
-              { label: "Refund Policy", href: "#" },
-              { label: "Shipping Policy", href: "#" },
             ].map((l) => (
               <Link key={l.label} href={l.href} className="no-underline text-zinc-600 hover:text-zinc-300 transition-colors">
                 {l.label}

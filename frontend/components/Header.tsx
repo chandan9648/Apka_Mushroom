@@ -169,9 +169,9 @@ export function Header() {
                 </svg>
               </Link>
             ) : null}
-            <NavLink href="/#">Contact</NavLink>
+            <NavLink href="/contact">Contact</NavLink>
   
-            <NavLink href="/#about">Abouts</NavLink>
+            <NavLink href="/about">About Us</NavLink>
             {user?.role === "admin" ? <NavLink href="/admin">Admin</NavLink> : null}
           </nav>
 
@@ -236,9 +236,9 @@ export function Header() {
                   { href: "/", label: "Home" },
                   ...(user?.role !== "admin" ? [{ href: "/products", label: "Products" }] : []),
 
-                  { href: "/#contact", label: "Contact" },
+                  { href: "/contact", label: "Contact" },
                   // { href: "/#recipes", label: "Recipes" },
-                  { href: "/#media", label: "Abouts" },
+                  { href: "/about", label: "About Us" },
 
                   ...(user?.role === "admin" ? [{ href: "/admin", label: "Admin" }] : []),
                 ].map((l) => (

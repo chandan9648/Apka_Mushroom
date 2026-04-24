@@ -9,7 +9,7 @@ import { axiosErrorCode } from "@/lib/axios";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 
-export default function LoginPage() {
+function LoginContent() {
   const router = useRouter();
   const sp = useSearchParams();
   const next = sp.get("next") || "/";
@@ -127,5 +127,13 @@ export default function LoginPage() {
         </p>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <React.Suspense fallback={<div className="min-h-[calc(100vh-10rem)] flex items-center justify-center bg-zinc-50 py-12 px-4">Loading...</div>}>
+      <LoginContent />
+    </React.Suspense>
   );
 }

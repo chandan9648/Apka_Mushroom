@@ -7,7 +7,7 @@ import { useAuth, authErrorMessage } from "@/components/providers/AuthProvider";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 
-export default function VerifyEmailPage() {
+function VerifyEmailContent() {
   const router = useRouter();
   const sp = useSearchParams();
   const preset = sp.get("email") || "";
@@ -120,5 +120,13 @@ export default function VerifyEmailPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function VerifyEmailPage() {
+  return (
+    <React.Suspense fallback={<div className="min-h-[calc(100vh-10rem)] flex items-center justify-center bg-zinc-50 py-12 px-4">Loading...</div>}>
+      <VerifyEmailContent />
+    </React.Suspense>
   );
 }

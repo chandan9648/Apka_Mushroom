@@ -3,7 +3,7 @@ import { apiFetchJson } from "@/lib/api";
 import type { Product } from "@/lib/types";
 import { formatMoney } from "@/lib/money";
 import { Card, CardBody, CardHeader } from "@/components/ui/Card";
-import { AddToCartButton } from "@/components/AddToCartButton";
+import { FavoriteButton } from "@/components/FavoriteButton";
 import { ProductCard } from "@/components/ProductCard";
 import { ReviewForm } from "@/components/ReviewForm";
 
@@ -162,13 +162,10 @@ export default async function ProductPage({ params }: Props) {
 
           {/* CTA */}
           <div className="mt-6 flex flex-wrap gap-3">
-            <AddToCartButton product={product} />
-            <Link
-              href="/cart"
-              className="inline-flex items-center gap-1.5 rounded-xl border border-zinc-200 bg-white px-5 py-2.5 text-sm font-medium text-zinc-900 no-underline hover:bg-zinc-50 hover:border-zinc-300 shadow-sm transition-colors"
-            >
-              View cart
-            </Link>
+            <span className="inline-flex items-center gap-2 rounded-xl bg-amber-400 px-6 py-3 text-sm font-semibold text-zinc-900 shadow-md">
+              <FavoriteButton product={product} className="h-6 w-6 !bg-transparent !border-none !p-0 !text-zinc-900 hover:!text-red-600" />
+              <span>Add to Favorites</span>
+            </span>
           </div>
 
           {/* Description */}

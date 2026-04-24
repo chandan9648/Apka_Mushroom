@@ -19,16 +19,6 @@ const trustFeatures = [
   {
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <circle cx="12" cy="12" r="10" />
-        <path d="M12 6v6l4 2" />
-      </svg>
-    ),
-    title: "Fast Delivery",
-    desc: "Get your order delivered quickly across India",
-  },
-  {
-    icon: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
         <polyline points="9 22 9 12 15 12 15 22" />
       </svg>
@@ -115,7 +105,7 @@ export default async function HomePage() {
       {/* ── Trust features strip ── */}
       <section className="border-b border-zinc-100 bg-white">
         <div className="container-x py-10">
-          <div className="grid grid-cols-2 gap-6 sm:gap-8 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-3 sm:gap-8">
             {trustFeatures.map((f) => (
               <div key={f.title} className="flex flex-col items-center text-center gap-3 sm:flex-row sm:items-start sm:text-left sm:gap-4">
                 <div className="shrink-0 grid h-12 w-12 place-items-center rounded-2xl bg-amber-50 text-amber-600">

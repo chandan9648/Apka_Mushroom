@@ -1,18 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { Button } from "@/components/ui/Button";
-import { useCart } from "@/components/providers/CartProvider";
+import { FavoriteButton } from "@/components/FavoriteButton";
 import { useAuth } from "@/components/providers/AuthProvider";
 import type { Product } from "@/lib/types";
 import { formatMoney } from "@/lib/money";
 
 export function ProductCard({ product }: { product: Product }) {
   const { user } = useAuth();
-  const { add } = useCart();
   const image = product.images?.[0];
   const isAdmin = user?.role === "admin";
-  const inStock = product.stock > 0;
 
   const discountPct =
     product.compareAtPrice && product.compareAtPrice > product.price
@@ -20,7 +17,7 @@ export function ProductCard({ product }: { product: Product }) {
       : null;
 
   return (
-    <div className="group flex flex-col rounded-2xl border border-zinc-200 bg-white overflow-hidden shadow-sm hover:shadow-md hover:border-zinc-300 transition-all duration-200">
+    <div className="group flex flex-col rounded-2xl border border-zinc-200 bg-white overflow-hidden shadow-sm hover-lift transition-all duration-300">
       {/* Image */}
       <Link href={`/products/${product.slug}`} className="no-underline relative overflow-hidden">
         <div className="aspect-[4/3] w-full bg-zinc-50 overflow-hidden">
@@ -50,11 +47,6 @@ export function ProductCard({ product }: { product: Product }) {
               -{discountPct}%
             </span>
           ) : null}
-          {!inStock ? (
-            <span className="rounded-full bg-zinc-800/80 px-2 py-0.5 text-[10px] font-semibold text-white backdrop-blur-sm">
-              Sold Out
-            </span>
-          ) : null}
         </div>
       </Link>
 
@@ -74,30 +66,9 @@ export function ProductCard({ product }: { product: Product }) {
           </div>
         </Link>
 
-        <div className="mt-3 flex items-center justify-between gap-2">
-          <div className={`text-xs font-medium ${inStock ? "text-emerald-600" : "text-zinc-400"}`}>
-            {inStock ? `${product.stock} in stock` : "Out of stock"}
-          </div>
+        <div className="mt-3 flex items-center justify-end gap-2">
           {!isAdmin ? (
-            !user ? (
-              <Link
-                href={`/auth/login?next=${encodeURIComponent(`/products/${product.slug}`)}`}
-                className="text-xs px-3 py-1.5 rounded-lg bg-zinc-900 text-white no-underline hover:bg-zinc-700 transition-colors font-medium"
-              >
-                Add 
-              </Link>
-            ) : (
-              <Button
-                onClick={() => add(product, 1)}
-                disabled={!inStock}
-                className="text-xs px-3 py-1.5 rounded-lg gap-1.5"
-              >
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <path d="M6 7h15l-2 10H7L6 7Zm0 0-.8-3H2M9 21a1 1 0 1 0 0-2 1 1 0 0 0 0 2Zm8 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" />
-                </svg>
-                Add
-              </Button>
-            )
+            <FavoriteButton product={product} className="h-9 w-9 rounded-full" />
           ) : null}
         </div>
       </div>
